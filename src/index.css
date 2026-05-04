@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+
+  --color-obsidian: #0A0A0A;
+  --color-clay: #E55A1C;
+  --color-bone: #F5F3F1;
+}
+
+@layer base {
+  body {
+    @apply bg-obsidian text-bone font-sans;
+  }
+}
+
+.cinematic-mask {
+  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+}
