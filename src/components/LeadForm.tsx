@@ -2,6 +2,8 @@ import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { CheckCircle2, Upload, FileText, X, ChevronRight, ChevronLeft } from "lucide-react";
 
+import { submitQuote } from "../services/quoteService";
+
 export default function LeadForm() {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,10 +32,22 @@ export default function LeadForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsSubmitting(false);
-    setIsSuccess(true);
+    try {
+      await submitQuote({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        coverageTypes: formData.coverageTypes,
+        fileName: fileName
+      });
+      setIsSuccess(true);
+    } catch (error) {
+      console.error("Submission failed:", error);
+      // In a real app we might show an error message to the user
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSuccess) {
@@ -46,9 +60,9 @@ export default function LeadForm() {
             className="max-w-md mx-auto"
           >
             <CheckCircle2 className="w-20 h-20 text-green-500 mx-auto mb-8" />
-            <h2 className="font-display text-4xl font-bold mb-4 italic uppercase">Analysis Reserved</h2>
+            <h2 className="font-display text-4xl font-bold mb-4 italic uppercase">Thank You!</h2>
             <p className="text-neutral-500 leading-relaxed mb-8 font-light italic">
-              Jaxson Denton has received your request. We will review your documentation and reach out via {formData.email} within 24 business hours.
+              Jaxson Denton has received your request. We will review your documentation and reach out to you from <span className="font-bold text-obsidian">jaxson@crgia.com</span> within 24 business hours.
             </p>
             <button 
               onClick={() => { setStep(1); setIsSuccess(false); setFormData({ name: "", email: "", phone: "", address: "", coverageTypes: [], notes: "" }); setFileName(null); }}
@@ -108,7 +122,7 @@ export default function LeadForm() {
                         <input 
                           required
                           type="email" 
-                          placeholder="email@example.com"
+                          placeholder="Jaxson@crgia.com"
                           className="w-full px-4 py-4 bg-bone/50 border border-neutral-200 focus:border-clay outline-none transition-colors"
                           value={formData.email}
                           onChange={(e) => setFormData({...formData, email: e.target.value})}

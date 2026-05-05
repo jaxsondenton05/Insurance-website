@@ -1,0 +1,53 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global helpers
+    function isSignedIn() { return request.auth != null; }
+    function isEmailVerified() { return request.auth.token.email_verified == true; }
+    function isJaxson() {
+      return isSignedIn() && 
+             (request.auth.token.email.lower() == 'jaxson@crgia.com' || 
+              request.auth.token.email.lower() == 'jaxson.denton05@gmail.com') && 
+             isEmailVerified();
+    }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // Quote Validation Helper
+    function isValidQuote(data) {
+      return data.keys().hasAll(['name', 'email', 'phone', 'address', 'createdAt', 'status', 'adminContact']) &&
+             data.keys().size() >= 7 &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 200 &&
+             data.email is string && data.email.matches('^.+@.+$') &&
+             data.phone is string && data.phone.size() >= 10 && data.phone.size() <= 20 &&
+             data.address is string && data.address.size() > 0 && data.address.size() <= 500 &&
+             data.createdAt == request.time &&
+             data.status in ['new', 'reviewed', 'archived'] &&
+             data.adminContact == 'jaxson@crgia.com';
+    }
+
+    match /quotes/{quoteId} {
+      // Users can create quotes without being signed in (lead generation)
+      allow create: if isValidId(quoteId) && isValidQuote(incoming());
+      
+      // Only Jaxson can read or update quotes
+      allow read, list: if isJaxson();
+      
+      allow update: if isJaxson() && 
+                      isValidQuote(incoming()) && 
+                      incoming().diff(existing()).affectedKeys().hasOnly(['status']);
+                      
+      allow delete: if false; // Prevention of accidental data loss
+    }
+
+    match /test/connection {
+      allow read: if true;
+    }
+  }
+}

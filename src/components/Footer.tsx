@@ -1,4 +1,5 @@
 import { Mail, Phone, Instagram, Linkedin, Twitter } from "lucide-react";
+import { Link } from "react-router-dom";
 import Logo from "./Logo";
 
 export default function Footer() {
@@ -58,6 +59,7 @@ export default function Footer() {
           <div className="flex gap-8 text-[10px] text-bone/30 uppercase tracking-widest">
             <a href="#" className="hover:text-bone transition-colors">Compliance</a>
             <a href="#" className="hover:text-bone transition-colors">Terms</a>
+            <Link to="/admin" className="hover:text-bone transition-colors opacity-0 hover:opacity-100">Admin</Link>
           </div>
         </div>
       </div>
