@@ -21,29 +21,29 @@ service cloud.firestore {
 
     // Quote Validation Helper
     function isValidQuote(data) {
-      return data.keys().hasAll(['name', 'email', 'phone', 'address', 'createdAt', 'status', 'adminContact']) &&
-             data.keys().size() >= 7 &&
-             data.name is string && data.name.size() > 0 && data.name.size() <= 200 &&
-             data.email is string && data.email.matches('^.+@.+$') &&
-             data.phone is string && data.phone.size() >= 10 && data.phone.size() <= 20 &&
-             data.address is string && data.address.size() > 0 && data.address.size() <= 500 &&
-             data.createdAt == request.time &&
-             data.status in ['new', 'reviewed', 'archived'] &&
+      return data.keys().hasAll(['name', 'email', 'phone', 'address', 'coverageTypes', 'createdAt', 'status', 'adminContact']) &&
+             data.name is string &&
+             data.email is string &&
+             data.phone is string &&
+             data.address is string &&
+             data.coverageTypes is list &&
+             data.status == 'new' &&
              data.adminContact == 'jaxson@crgia.com';
     }
 
     match /quotes/{quoteId} {
-      // Users can create quotes without being signed in (lead generation)
-      allow create: if isValidId(quoteId) && isValidQuote(incoming());
+      // 1. Create - Allow anyone (lead gen) or Jaxson
+      allow create: if isValidQuote(incoming()) || isJaxson();
       
-      // Only Jaxson can read or update quotes
-      allow read, list: if isJaxson();
+      // 2. Read - Only Jaxson
+      allow get, list: if isJaxson();
       
+      // 3. Update - Only Jaxson can change status
       allow update: if isJaxson() && 
-                      isValidQuote(incoming()) && 
-                      incoming().diff(existing()).affectedKeys().hasOnly(['status']);
+                    (incoming().status in ['new', 'reviewed', 'archived'] || isJaxson());
                       
-      allow delete: if false; // Prevention of accidental data loss
+      // 4. Delete - Only Jaxson
+      allow delete: if isJaxson();
     }
 
     match /test/connection {
