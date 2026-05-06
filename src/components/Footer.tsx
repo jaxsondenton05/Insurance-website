@@ -10,7 +10,7 @@ export default function Footer() {
           <div className="space-y-6">
             <div className="flex items-center gap-3">
               <Logo className="w-8 h-8" />
-              <span className="font-display font-bold text-lg tracking-tight text-bone uppercase italic">Jaxson Denton Insurance</span>
+              <span className="font-display font-bold text-lg tracking-tight text-bone uppercase italic">Quote</span>
             </div>
           </div>
 
