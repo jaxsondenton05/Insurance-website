@@ -22,7 +22,7 @@ async function startServer() {
       const { name, email, phone, address, coverageTypes, fileName } = req.body;
 
       const sheetId = process.env.GOOGLE_SHEET_ID;
-      const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
+      const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
 
       if (!sheetId || !serviceAccountJson) {
         console.warn("Google Sheets configuration missing. Skipping sheet sync.");
