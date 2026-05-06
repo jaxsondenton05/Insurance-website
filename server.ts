@@ -82,7 +82,7 @@ async function startServer() {
       
       const values = [
         [
-          new Date().toLocaleString(),
+          new Date().toLocaleString("en-US", { timeZone: "America/Chicago" }),
           name || "Unknown",
           email || "No Email",
           phone || "No Phone",
