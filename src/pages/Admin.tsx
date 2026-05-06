@@ -94,6 +94,37 @@ export default function Admin() {
     await signOut(auth);
   };
 
+  const [testSyncLoading, setTestSyncLoading] = useState(false);
+  const [testSyncResult, setTestSyncResult] = useState<{success: boolean, message: string} | null>(null);
+
+  const testGoogleSync = async () => {
+    setTestSyncLoading(true);
+    setTestSyncResult(null);
+    try {
+      const response = await fetch('/api/sync-to-sheet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: "SYSTEM TEST",
+          email: "test@example.com",
+          phone: "000-000-0000",
+          address: "Admin Dashboard Test",
+          coverageTypes: ["Test"],
+          fileName: "N/A"
+        })
+      });
+      const result = await response.json();
+      setTestSyncResult({ 
+        success: result.success, 
+        message: result.success ? "Sync Successful! Check your Google Sheet." : `Sync Failed: ${result.error}`
+      });
+    } catch (err: any) {
+      setTestSyncResult({ success: false, message: `Network Error: ${err.message}` });
+    } finally {
+      setTestSyncLoading(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-bone flex items-center justify-center">
@@ -169,6 +200,22 @@ export default function Admin() {
             >
               New Requests ({quotes.filter(q => q.status === 'new').length})
             </button>
+          </div>
+
+          <div className="mt-8 pt-8 border-t border-neutral-100">
+            <h3 className="text-[10px] uppercase font-bold text-neutral-400 mb-4 tracking-widest">System Sync</h3>
+            <button 
+              onClick={testGoogleSync}
+              disabled={testSyncLoading}
+              className={`w-full py-3 px-4 text-[10px] font-bold uppercase tracking-widest transition-all border ${testSyncLoading ? 'bg-neutral-100 text-neutral-400' : 'bg-white hover:bg-clay hover:text-white border-neutral-200 hover:border-clay'}`}
+            >
+              {testSyncLoading ? "Syncing..." : "Test Google Sync"}
+            </button>
+            {testSyncResult && (
+              <p className={`mt-3 text-[10px] font-medium leading-relaxed ${testSyncResult.success ? 'text-green-600' : 'text-red-500'}`}>
+                {testSyncResult.message}
+              </p>
+            )}
           </div>
         </div>
 

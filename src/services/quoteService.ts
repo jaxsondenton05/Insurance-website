@@ -76,19 +76,26 @@ export async function submitQuote(quoteData: QuoteRequest) {
 
     // 2. Sync to Google Sheets via backend
     try {
+      console.log("Attempting Google Sheets sync for:", quoteData.email);
+      // Use absolute path to ensure it works across different URL structures
       const response = await fetch('/api/sync-to-sheet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(quoteData)
       });
-      const result = await response.json();
-      if (!result.success) {
-        console.error("Google Sheets sync failed:", result.error);
+      
+      if (!response.ok) {
+        console.error(`Sheet sync API error: ${response.status} ${response.statusText}`);
       } else {
-        console.log("Google Sheets sync successful");
+        const result = await response.json();
+        if (!result.success) {
+          console.error("Google Sheets sync failed:", result.error);
+        } else {
+          console.log("Google Sheets sync successful");
+        }
       }
     } catch (sheetError) {
-      console.error("Optional Google Sheets sync network failure:", sheetError);
+      console.error("Critical Google Sheets sync failure:", sheetError);
     }
 
     return docRef.id;

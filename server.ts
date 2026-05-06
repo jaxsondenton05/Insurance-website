@@ -18,6 +18,7 @@ async function startServer() {
 
   // API Routes
   app.post("/api/sync-to-sheet", async (req, res) => {
+    console.log("Received sync request for:", req.body?.email);
     try {
       const { name, email, phone, address, coverageTypes, fileName } = req.body;
       let rawSheetId = process.env.GOOGLE_SHEET_ID;
@@ -36,24 +37,37 @@ async function startServer() {
         sheetId = idMatch[1];
         console.log(`Extracted Sheet ID from URL: ${sheetId}`);
       } else {
-        // If it's a long string without /d/, just use it
-        sheetId = sheetId.split("?")[0].split("/")[0];
+        // Handle potential full URL without /d/ (unlikely but possible) or clean up ID
+        sheetId = sheetId.split("?")[0].split("/").pop() || sheetId;
+        console.log(`Cleaned up Sheet ID: ${sheetId}`);
       }
 
-      console.log(`Syncing quote for ${email} to Google Sheets ID: ${sheetId}...`);
-
       if (!serviceAccountJson) {
-        console.error("Service account credentials missing (checked GOOGLE_SERVICE_ACCOUNT_KEY and JSON).");
+        console.error("Service account credentials missing.");
         return res.status(200).json({ success: false, error: "Service account key missing" });
       }
 
       let credentials;
       try {
-        credentials = JSON.parse(serviceAccountJson);
+        // Try direct parse first
+        credentials = JSON.parse(serviceAccountJson.trim());
       } catch (parseError) {
-        console.error("Failed to parse GOOGLE_SERVICE_ACCOUNT_KEY JSON:", parseError);
-        return res.status(200).json({ success: false, error: "Invalid JSON in service account key" });
+        try {
+          // Try to handle double-stringified JSON
+          const step1 = JSON.parse(serviceAccountJson.trim());
+          credentials = typeof step1 === "string" ? JSON.parse(step1) : step1;
+        } catch (secondError) {
+          console.error("Failed to parse GOOGLE_SERVICE_ACCOUNT_KEY JSON:", parseError);
+          return res.status(200).json({ success: false, error: "Invalid JSON in service account key" });
+        }
       }
+
+      // Safe fix for escaped newlines in the private key
+      if (credentials && credentials.private_key && typeof credentials.private_key === "string") {
+        credentials.private_key = credentials.private_key.replace(/\\n/g, "\n");
+      }
+
+      console.log(`Synchronizing to sheet: ${sheetId} using account: ${credentials.client_email}`);
 
       const auth = new google.auth.GoogleAuth({
         credentials,
