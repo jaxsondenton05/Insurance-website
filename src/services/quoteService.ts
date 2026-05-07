@@ -77,7 +77,7 @@ export async function submitQuote(quoteData: QuoteRequest) {
     // 2. Sync to Google Sheets via backend
     try {
       const syncUrl = `${window.location.origin}/api/sync-to-sheet`;
-      console.log(`[SYNC] Attempting Google Sheets sync for ${quoteData.email} via ${syncUrl}`);
+      console.log(`[SYNC] Origin: ${window.location.origin}, Full URL: ${syncUrl}`);
       
       const response = await fetch(syncUrl, {
         method: 'POST',
@@ -86,12 +86,18 @@ export async function submitQuote(quoteData: QuoteRequest) {
       });
       
       const responseText = await response.text();
+      console.log(`[SYNC] Response Status: ${response.status}`);
+      
       let result;
       try {
         result = JSON.parse(responseText);
       } catch (e) {
         console.error("[SYNC] Non-JSON response received:", responseText);
-        throw new Error(`Server returned a non-JSON response (Status: ${response.status}). This often means the server encountered a crash or returned an error page.`);
+        // If it's a 404, we want a very specific message to help the user understand it's a routing issue
+        if (response.status === 404) {
+          throw new Error(`The spreadsheet sync service (API) was not found (404). This usually means the server is not processing requests. Please refresh and try again.`);
+        }
+        throw new Error(`Server returned a non-JSON response (Status: ${response.status}). This usually means the server encountered a crash or returned an error page.`);
       }
 
       if (!response.ok || !result.success) {

@@ -18,20 +18,26 @@ async function startServer() {
   app.use(cors());
   app.use(express.json());
 
-  // Health Check
-  app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", timestamp: new Date().toISOString(), environment: process.env.NODE_ENV || "development" });
+  // Simple catch-all logger
+  app.use((req, res, next) => {
+    console.log(`[SERVER] ${req.method} ${req.path}`);
+    next();
   });
 
-  // API Routes
-  app.post("/api/sync-to-sheet", async (req, res) => {
-    const timestamp = new Date().toISOString();
-    console.log(`[SYNC][${timestamp}] --- NEW REQUEST ---`);
-    console.log(`[SYNC][${timestamp}] Headers:`, JSON.stringify(req.headers));
-    console.log(`[SYNC][${timestamp}] Body Keys:`, Object.keys(req.body || {}));
+  // Health Check - ensure it's simple
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "ok", time: Date.now() });
+  });
+
+  // Use a router for API to isolate it
+  const apiRouter = express.Router();
+
+  apiRouter.post("/sync-to-sheet", async (req, res) => {
+    const { name, email, phone, address, coverageTypes, fileName } = req.body || {};
+    const quoteEmail = email || "Unknown";
+    console.log(`[SYNC] Processing request for: ${quoteEmail}`);
     
     try {
-      const { name, email, phone, address, coverageTypes, fileName } = req.body;
       const rawSheetId = process.env.GOOGLE_SHEET_ID;
       const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_KEY || process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
 
@@ -139,27 +145,25 @@ async function startServer() {
           requestBody: { values },
         });
         
-        console.log(`[SYNC] Success. Row appended to ${appendResponse.data.updates?.updatedRange}`);
+        console.log(`[SYNC] Success. Row appended.`);
         return res.status(200).json({ 
           success: true, 
           updatedRange: appendResponse.data.updates?.updatedRange 
         });
       } catch (appendError: any) {
         console.error("[SYNC] Google Sheets API Error:", appendError.message);
-        let userMessage = appendError.message.includes("403") 
-          ? `Permission denied. Share your sheet with: ${credentials.client_email} as an 'Editor'.`
-          : `Google Sheets Error: ${appendError.message}`;
-        
-        return res.status(200).json({ success: false, error: userMessage });
+        return res.status(200).json({ success: false, error: appendError.message });
       }
     } catch (error: any) {
       console.error("[SYNC] Unexpected Server Error:", error);
       return res.status(500).json({ 
         success: false, 
-        error: `Internal Server Error: ${error.message || "Unknown error"}` 
+        error: error.message || "Internal Server Error" 
       });
     }
   });
+
+  app.use("/api", apiRouter);
 
   // Global error handler to ensure we always return JSON during crashes
   app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
