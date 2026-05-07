@@ -84,18 +84,16 @@ export async function submitQuote(quoteData: QuoteRequest) {
         body: JSON.stringify(quoteData)
       });
       
-      if (!response.ok) {
-        console.error(`Sheet sync API error: ${response.status} ${response.statusText}`);
-      } else {
-        const result = await response.json();
-        if (!result.success) {
-          console.error("Google Sheets sync failed:", result.error);
-        } else {
-          console.log("Google Sheets sync successful");
-        }
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || `Sheet sync failed with status ${response.status}`);
       }
-    } catch (sheetError) {
-      console.error("Critical Google Sheets sync failure:", sheetError);
+      
+      console.log("Google Sheets sync successful");
+    } catch (sheetError: any) {
+      console.error("Google Sheets sync failure:", sheetError);
+      // We throw this error so the LeadForm can show it to the user
+      throw new Error(`Google Sheets Sync Error: ${sheetError.message}`);
     }
 
     return docRef.id;

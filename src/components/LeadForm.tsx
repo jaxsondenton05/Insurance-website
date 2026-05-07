@@ -7,6 +7,7 @@ import { submitQuote } from "../services/quoteService";
 export default function LeadForm() {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -32,7 +33,10 @@ export default function LeadForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitError(null);
+    
     try {
+      console.log("Submitting form data:", formData);
       await submitQuote({
         name: formData.name,
         email: formData.email,
@@ -42,9 +46,17 @@ export default function LeadForm() {
         fileName: fileName
       });
       setIsSuccess(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Submission failed:", error);
-      // In a real app we might show an error message to the user
+      // Try to parse the specific error message if it's the JSON format we added
+      let message = "We encountered an issue processing your request. Please try again or contact jaxson@crgia.com directly.";
+      try {
+        if (error.message && error.message.startsWith("{")) {
+          const info = JSON.parse(error.message);
+          message = `Error ${info.operationType}: ${info.error}`;
+        }
+      } catch (e) {}
+      setSubmitError(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -259,6 +271,12 @@ export default function LeadForm() {
                         {isSubmitting ? "Processing..." : "Finalize Request"}
                       </button>
                     </div>
+
+                    {submitError && (
+                      <div className="p-4 bg-red-50 border border-red-100 text-red-600 text-xs italic text-center rounded-sm">
+                        {submitError}
+                      </div>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>

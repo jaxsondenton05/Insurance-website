@@ -18,15 +18,16 @@ async function startServer() {
 
   // API Routes
   app.post("/api/sync-to-sheet", async (req, res) => {
-    console.log("Received sync request for:", req.body?.email);
+    const quoteEmail = req.body?.email || "Unknown";
+    console.log(`[SYNC] Starting sync request for: ${quoteEmail}`);
+    
     try {
       const { name, email, phone, address, coverageTypes, fileName } = req.body;
       let rawSheetId = process.env.GOOGLE_SHEET_ID;
-      // Fallback for older variable naming
       const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_KEY || process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
 
       if (!rawSheetId) {
-        console.error("GOOGLE_SHEET_ID is missing from environment.");
+        console.error("[SYNC] GOOGLE_SHEET_ID is missing from environment.");
         return res.status(200).json({ success: false, error: "GOOGLE_SHEET_ID missing" });
       }
 
@@ -35,11 +36,11 @@ async function startServer() {
       const idMatch = sheetId.match(/\/d\/([a-zA-Z0-9-_]{15,})/);
       if (idMatch) {
         sheetId = idMatch[1];
-        console.log(`Extracted Sheet ID from URL: ${sheetId}`);
+        console.log(`[SYNC] Extracted Sheet ID: ${sheetId}`);
       } else {
-        // Handle potential full URL without /d/ (unlikely but possible) or clean up ID
-        sheetId = sheetId.split("?")[0].split("/").pop() || sheetId;
-        console.log(`Cleaned up Sheet ID: ${sheetId}`);
+        // Fallback for cases where only the ID is provided or it's a weird format
+        sheetId = sheetId.split("?")[0].split("/").filter(Boolean).pop() || sheetId;
+        console.log(`[SYNC] Cleaned up Sheet ID: ${sheetId}`);
       }
 
       if (!serviceAccountJson) {
@@ -49,25 +50,28 @@ async function startServer() {
 
       let credentials;
       try {
+        const rawJson = serviceAccountJson.trim();
         // Try direct parse first
-        credentials = JSON.parse(serviceAccountJson.trim());
+        credentials = JSON.parse(rawJson);
       } catch (parseError) {
         try {
-          // Try to handle double-stringified JSON
+          // Try to handle double-stringified JSON (common in env vars sometimes)
           const step1 = JSON.parse(serviceAccountJson.trim());
           credentials = typeof step1 === "string" ? JSON.parse(step1) : step1;
         } catch (secondError) {
-          console.error("Failed to parse GOOGLE_SERVICE_ACCOUNT_KEY JSON:", parseError);
+          console.error("[SYNC] Failed to parse GOOGLE_SERVICE_ACCOUNT_KEY JSON:", secondError);
           return res.status(200).json({ success: false, error: "Invalid JSON in service account key" });
         }
       }
 
-      // Safe fix for escaped newlines in the private key
       if (credentials && credentials.private_key && typeof credentials.private_key === "string") {
-        credentials.private_key = credentials.private_key.replace(/\\n/g, "\n");
+        // Fix common escaping issues from manual copy-pasting
+        if (!credentials.private_key.includes("\n") && credentials.private_key.includes("\\n")) {
+          credentials.private_key = credentials.private_key.replace(/\\n/g, "\n");
+        }
       }
 
-      console.log(`Synchronizing to sheet: ${sheetId} using account: ${credentials.client_email}`);
+      console.log(`[SYNC] Connecting to sheet: ${sheetId} as: ${credentials.client_email}`);
 
       const auth = new google.auth.GoogleAuth({
         credentials,
@@ -83,13 +87,10 @@ async function startServer() {
         const firstSheetName = spreadsheet.data.sheets?.[0]?.properties?.title;
         if (firstSheetName) {
           targetRange = `${firstSheetName}!A:H`;
+          console.log(`[SYNC] Using detected sheet name: ${targetRange}`);
         }
       } catch (getSpreadsheetError: any) {
-        console.error("Could not fetch spreadsheet metadata:", getSpreadsheetError.message);
-        return res.status(200).json({ 
-          success: false, 
-          error: `Spreadsheet not found or inaccessible. Did you share it with ${credentials.client_email}? (Error: ${getSpreadsheetError.message})`
-        });
+        console.error("[SYNC] Could not fetch spreadsheet metadata. Falling back to Sheet1!A:H", getSpreadsheetError.message);
       }
       
       const coverageStr = Array.isArray(coverageTypes) ? coverageTypes.join(", ") : "None";
@@ -107,19 +108,28 @@ async function startServer() {
         ],
       ];
 
-      console.log(`Appending values to range: ${targetRange}`);
-
-      await sheets.spreadsheets.values.append({
-        spreadsheetId: sheetId,
-        range: targetRange,
-        valueInputOption: "USER_ENTERED",
-        requestBody: {
-          values,
-        },
-      });
-
-      console.log("Successfully synced to Google Sheets.");
-      res.status(200).json({ success: true });
+      try {
+        console.log(`[SYNC] Appending values to range: ${targetRange}`);
+        await sheets.spreadsheets.values.append({
+          spreadsheetId: sheetId,
+          range: targetRange,
+          valueInputOption: "USER_ENTERED",
+          requestBody: {
+            values,
+          },
+        });
+        console.log("[SYNC] Successfully synced to Google Sheets.");
+        res.status(200).json({ success: true });
+      } catch (appendError: any) {
+        console.error("[SYNC] Append failed:", appendError.message);
+        const errorMsg = appendError.message.includes("403") 
+          ? `Permission denied. Please ensure your Google Sheet is shared with: ${credentials.client_email} as an Editor.`
+          : appendError.message.includes("404")
+          ? `Spreadsheet not found. Please check your sheet ID or URL.`
+          : `Failed to write to sheet: ${appendError.message}`;
+        
+        res.status(200).json({ success: false, error: errorMsg });
+      }
     } catch (error) {
       console.error("Error syncing to Google Sheets:", error);
       res.status(200).json({ 
