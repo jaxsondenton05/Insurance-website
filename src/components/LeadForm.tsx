@@ -48,14 +48,19 @@ export default function LeadForm() {
       setIsSuccess(true);
     } catch (error: any) {
       console.error("Submission failed:", error);
-      // Try to parse the specific error message if it's the JSON format we added
-      let message = "We encountered an issue processing your request. Please try again or contact jaxson@crgia.com directly.";
+      
+      let message = error.message || "An unexpected error occurred.";
+      
+      // If it's the structured Firestore error we added, format it nicely
       try {
-        if (error.message && error.message.startsWith("{")) {
-          const info = JSON.parse(error.message);
-          message = `Error ${info.operationType}: ${info.error}`;
+        if (typeof message === 'string' && message.startsWith("{")) {
+          const info = JSON.parse(message);
+          message = `Database Error: ${info.error} (Operation: ${info.operationType})`;
         }
-      } catch (e) {}
+      } catch (e) {
+        // Fallback to the raw error message if JSON parsing fails
+      }
+      
       setSubmitError(message);
     } finally {
       setIsSubmitting(false);

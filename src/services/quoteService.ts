@@ -76,24 +76,31 @@ export async function submitQuote(quoteData: QuoteRequest) {
 
     // 2. Sync to Google Sheets via backend
     try {
-      console.log("Attempting Google Sheets sync for:", quoteData.email);
-      // Use absolute path to ensure it works across different URL structures
+      console.log(`[SYNC] Attempting Google Sheets sync for ${quoteData.email}`);
+      
       const response = await fetch('/api/sync-to-sheet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(quoteData)
       });
       
-      const result = await response.json();
+      const responseText = await response.text();
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (e) {
+        console.error("[SYNC] Non-JSON response received:", responseText);
+        throw new Error(`Server returned a non-JSON response (Status: ${response.status}). This often means the server encountered a crash or returned an error page.`);
+      }
+
       if (!response.ok || !result.success) {
         throw new Error(result.error || `Sheet sync failed with status ${response.status}`);
       }
       
-      console.log("Google Sheets sync successful");
+      console.log("[SYNC] Google Sheets sync successful:", result.updatedRange);
     } catch (sheetError: any) {
-      console.error("Google Sheets sync failure:", sheetError);
-      // We throw this error so the LeadForm can show it to the user
-      throw new Error(`Google Sheets Sync Error: ${sheetError.message}`);
+      console.error("[SYNC] Google Sheets sync failure:", sheetError);
+      throw new Error(sheetError.message);
     }
 
     return docRef.id;
