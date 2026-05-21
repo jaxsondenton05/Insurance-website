@@ -76,8 +76,8 @@ export async function submitQuote(quoteData: QuoteRequest) {
 
     // 2. Sync to Google Sheets via backend
     try {
-      const syncUrl = `${window.location.origin}/api/sync-to-sheet`;
-      console.log(`[SYNC] Origin: ${window.location.origin}, Full URL: ${syncUrl}`);
+      const syncUrl = '/api/sync-to-sheet';
+      console.log(`[SYNC] Attempting Google Sheets sync for ${quoteData.email} via ${syncUrl}`);
       
       const response = await fetch(syncUrl, {
         method: 'POST',
