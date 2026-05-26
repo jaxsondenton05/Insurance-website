@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Services from "../components/Services";
@@ -6,7 +6,6 @@ import About from "../components/About";
 import LeadForm from "../components/LeadForm";
 import Footer from "../components/Footer";
 import { motion, useScroll, useSpring } from "motion/react";
-import { testConnection } from "../services/quoteService";
 
 export default function Home() {
   const { scrollYProgress } = useScroll();
@@ -15,10 +14,6 @@ export default function Home() {
     damping: 30,
     restDelta: 0.001
   });
-
-  useEffect(() => {
-    testConnection();
-  }, []);
 
   return (
     <main className="relative">
