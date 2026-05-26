@@ -49,6 +49,9 @@ export default function Footer() {
                <p className="text-[10px] text-bone/20 leading-relaxed font-light italic uppercase tracking-widest"> 
                 Licensed Independent Insurance Agent <br />
                 State of Texas.
+                <span className="block mt-2 text-clay font-medium normal-case tracking-wider text-[11px]">
+                  A proud agent of CRG Insurance Agency
+                </span>
                </p>
             </div>
           </div>
