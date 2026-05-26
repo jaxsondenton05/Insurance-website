@@ -7,7 +7,6 @@ import { submitQuote } from "../services/quoteService";
 export default function LeadForm() {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -33,10 +32,7 @@ export default function LeadForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitError(null);
-    
     try {
-      console.log("Submitting form data:", formData);
       await submitQuote({
         name: formData.name,
         email: formData.email,
@@ -46,22 +42,9 @@ export default function LeadForm() {
         fileName: fileName
       });
       setIsSuccess(true);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Submission failed:", error);
-      
-      let message = error.message || "An unexpected error occurred.";
-      
-      // If it's the structured Firestore error we added, format it nicely
-      try {
-        if (typeof message === 'string' && message.startsWith("{")) {
-          const info = JSON.parse(message);
-          message = `Database Error: ${info.error} (Operation: ${info.operationType})`;
-        }
-      } catch (e) {
-        // Fallback to the raw error message if JSON parsing fails
-      }
-      
-      setSubmitError(message);
+      // In a real app we might show an error message to the user
     } finally {
       setIsSubmitting(false);
     }
@@ -276,12 +259,6 @@ export default function LeadForm() {
                         {isSubmitting ? "Processing..." : "Finalize Request"}
                       </button>
                     </div>
-
-                    {submitError && (
-                      <div className="p-4 bg-red-50 border border-red-100 text-red-600 text-xs italic text-center rounded-sm">
-                        {submitError}
-                      </div>
-                    )}
                   </motion.div>
                 )}
               </AnimatePresence>

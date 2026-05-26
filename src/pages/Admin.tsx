@@ -8,8 +8,9 @@ import {
 } from "firebase/firestore";
 import { signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, User } from "firebase/auth";
 import { db, auth } from "../lib/firebase";
-import { FileText, LogOut, ChevronRight, Mail, Phone, MapPin, Calendar, Clock, Filter } from "lucide-react";
+import { FileText, LogOut, ChevronRight, Mail, Phone, MapPin, Calendar, Clock, Filter, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { deleteQuote } from "../services/quoteService";
 
 interface Quote {
   id: string;
@@ -35,6 +36,26 @@ export default function Admin() {
   const isAdmin = user && user.email && ALLOWED_EMAILS.includes(user.email.toLowerCase());
 
   const [error, setError] = useState<string | null>(null);
+
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const handleDeleteQuote = async () => {
+    if (!selectedQuote) return;
+    setIsDeleting(true);
+    setDeleteError(null);
+    try {
+      await deleteQuote(selectedQuote.id);
+      setSelectedQuote(null);
+      setShowDeleteConfirm(false);
+    } catch (err: any) {
+      console.error("Delete failed:", err);
+      setDeleteError("Failed to delete the quote. Check your database permissions.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (u) => {
@@ -223,7 +244,11 @@ export default function Admin() {
           {filteredQuotes.map((quote) => (
             <button
               key={quote.id}
-              onClick={() => setSelectedQuote(quote)}
+              onClick={() => {
+                setSelectedQuote(quote);
+                setShowDeleteConfirm(false);
+                setDeleteError(null);
+              }}
               className={`w-full p-6 text-left border-b border-neutral-100 transition-colors ${selectedQuote?.id === quote.id ? 'bg-white shadow-[inset_4px_0_0_0_#9D5139]' : 'hover:bg-white/50'}`}
             >
               <div className="flex justify-between items-start mb-2">
@@ -327,6 +352,49 @@ export default function Admin() {
                           <p className="text-[10px] font-mono text-neutral-500 break-all">{selectedQuote.id}</p>
                         </div>
                       </div>
+                    </section>
+
+                    <section className="bg-white p-10 border border-neutral-200 shadow-sm">
+                      <h2 className="text-xs font-bold uppercase tracking-widest text-red-600 mb-6 font-sans">Actions</h2>
+                      {!showDeleteConfirm ? (
+                        <button
+                          onClick={() => {
+                            setShowDeleteConfirm(true);
+                            setDeleteError(null);
+                          }}
+                          className="w-full bg-red-50 hover:bg-red-100 text-red-700 py-3 px-4 font-bold transition-all border border-red-200 hover:border-red-300 text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          Delete Request
+                        </button>
+                      ) : (
+                        <div className="space-y-4">
+                          <p className="text-xs font-light italic text-neutral-500 leading-relaxed">
+                            Are you sure you want to delete this quote request? This action is permanent and cannot be undone.
+                          </p>
+                          <div className="grid grid-cols-2 gap-3">
+                            <button
+                              onClick={handleDeleteQuote}
+                              disabled={isDeleting}
+                              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-3 text-xs uppercase tracking-wider transition-colors disabled:bg-neutral-300 flex items-center justify-center gap-1.5 cursor-pointer"
+                            >
+                              {isDeleting ? "Deleting..." : "Yes, Delete"}
+                            </button>
+                            <button
+                              onClick={() => setShowDeleteConfirm(false)}
+                              disabled={isDeleting}
+                              className="bg-white hover:bg-neutral-50 border border-neutral-200 text-neutral-600 font-bold py-2 px-3 text-xs uppercase tracking-wider transition-colors cursor-pointer"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                          {deleteError && (
+                            <p className="text-xs text-red-600 font-medium italic mt-2">
+                              {deleteError}
+                            </p>
+                          )}
+                        </div>
+                      )}
                     </section>
                   </div>
                 </div>

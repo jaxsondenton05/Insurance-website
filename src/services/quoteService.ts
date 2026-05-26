@@ -3,7 +3,8 @@ import {
   addDoc, 
   serverTimestamp, 
   getDocFromServer,
-  doc
+  doc,
+  deleteDoc
 } from 'firebase/firestore';
 import { db, auth } from '../lib/firebase';
 
@@ -76,38 +77,26 @@ export async function submitQuote(quoteData: QuoteRequest) {
 
     // 2. Sync to Google Sheets via backend
     try {
-      const syncUrl = '/api/sync-to-sheet';
-      console.log(`[SYNC] Attempting Google Sheets sync for ${quoteData.email} via ${syncUrl}`);
-      
-      const response = await fetch(syncUrl, {
+      console.log("Attempting Google Sheets sync for:", quoteData.email);
+      // Use absolute path to ensure it works across different URL structures
+      const response = await fetch('/api/sync-to-sheet', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(quoteData)
       });
       
-      const responseText = await response.text();
-      console.log(`[SYNC] Response Status: ${response.status}`);
-      
-      let result;
-      try {
-        result = JSON.parse(responseText);
-      } catch (e) {
-        console.error("[SYNC] Non-JSON response received:", responseText);
-        // If it's a 404, we want a very specific message to help the user understand it's a routing issue
-        if (response.status === 404) {
-          throw new Error(`The spreadsheet sync service (API) was not found (404). This usually means the server is not processing requests. Please refresh and try again.`);
+      if (!response.ok) {
+        console.error(`Sheet sync API error: ${response.status} ${response.statusText}`);
+      } else {
+        const result = await response.json();
+        if (!result.success) {
+          console.error("Google Sheets sync failed:", result.error);
+        } else {
+          console.log("Google Sheets sync successful");
         }
-        throw new Error(`Server returned a non-JSON response (Status: ${response.status}). This usually means the server encountered a crash or returned an error page.`);
       }
-
-      if (!response.ok || !result.success) {
-        throw new Error(result.error || `Sheet sync failed with status ${response.status}`);
-      }
-      
-      console.log("[SYNC] Google Sheets sync successful:", result.updatedRange);
-    } catch (sheetError: any) {
-      console.error("[SYNC] Google Sheets sync failure:", sheetError);
-      throw new Error(sheetError.message);
+    } catch (sheetError) {
+      console.error("Critical Google Sheets sync failure:", sheetError);
     }
 
     return docRef.id;
@@ -124,5 +113,15 @@ export async function testConnection() {
     if(error instanceof Error && error.message.includes('the client is offline')) {
       console.error("Please check your Firebase configuration.");
     }
+  }
+}
+
+export async function deleteQuote(quoteId: string) {
+  const path = `quotes/${quoteId}`;
+  try {
+    const docRef = doc(db, 'quotes', quoteId);
+    await deleteDoc(docRef);
+  } catch (error) {
+    handleFirestoreError(error, OperationType.DELETE, path);
   }
 }

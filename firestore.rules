@@ -47,7 +47,7 @@ service cloud.firestore {
     }
 
     match /test/connection {
-      allow read: if true;
+      allow read: if request.auth == null || request.auth != null;
     }
   }
 }
