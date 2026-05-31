@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
+import heroBg from "../assets/images/professional_hero_bg_1780265987302.png";
 
 export default function Hero() {
   return (
@@ -7,8 +8,8 @@ export default function Hero() {
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="https://images.unsplash.com/photo-1533106418989-88406c7cc8ca?q=80&w=2070" 
-          alt="Texas Highway"
+          src={heroBg} 
+          alt="Professional Corporate Architecture"
           className="w-full h-full object-cover"
           referrerPolicy="no-referrer"
         />
