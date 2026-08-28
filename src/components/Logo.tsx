@@ -1,61 +1,98 @@
 import React from 'react';
 
-export default function Logo({ className = "w-10 h-10" }: { className?: string }) {
+interface LogoProps {
+  className?: string;
+  iconOnly?: boolean;
+  withTagline?: boolean;
+  withAccentBar?: boolean;
+  theme?: 'dark' | 'light' | 'auto';
+  size?: 'sm' | 'md' | 'lg';
+}
+
+export function ShieldCheckLogoIcon({ className = "w-8 h-8", filled = false }: { className?: string; filled?: boolean }) {
   return (
-    <svg 
-      viewBox="0 0 100 100" 
-      fill="none" 
-      xmlns="http://www.w3.org/2000/svg" 
+    <svg
+      viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
       className={className}
+      aria-hidden="true"
     >
-      <circle cx="50" cy="50" r="48" fill="white" />
-      <circle cx="50" cy="50" r="46" stroke="#0A0A0A" strokeWidth="0.5" opacity="0.2" />
-      <circle cx="50" cy="50" r="38" fill="#0A0A0A" />
-      
-      {/* Sun and Rays */}
-      <circle cx="50" cy="48" r="8" fill="#E55A1C" />
-      <g stroke="#E55A1C" strokeWidth="2" strokeLinecap="round">
-        <line x1="50" y1="36" x2="50" y2="33" />
-        <line x1="41" y1="39" x2="38.5" y2="36.5" />
-        <line x1="59" y1="39" x2="61.5" y2="36.5" />
-        <line x1="36" y1="48" x2="33" y2="48" />
-        <line x1="64" y1="48" x2="67" y2="48" />
-      </g>
-
-      {/* Mountains */}
-      <path 
-        d="M32 60L50 48L68 60L75 68H25L32 60Z" 
-        fill="white" 
+      {/* Outer Shield Path with soft rounded curves matching business cards */}
+      <path
+        d="M24 4.5C30.5 8 38 8.8 40.5 9.5C41.2 14.5 41.5 24 37 32.5C33.5 39 26.5 43.5 24 44.5C21.5 43.5 14.5 39 11 32.5C6.5 24 6.8 14.5 7.5 9.5C10 8.8 17.5 8 24 4.5Z"
+        fill={filled ? "currentColor" : "rgba(224, 106, 59, 0.12)"}
+        stroke="currentColor"
+        strokeWidth="3.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
-      <path 
-        d="M50 48L60 55L55 58L50 48Z" 
-        fill="#0A0A0A" 
-        fillOpacity="0.2"
+      {/* Inner Checkmark */}
+      <path
+        d="M17 23.5L22 28.5L31.5 19"
+        stroke={filled ? "#FFFFFF" : "currentColor"}
+        strokeWidth="3.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
-
-      {/* Text Path Definitions */}
-      <defs>
-        <path id="topTextPath" d="M22,50 a28,28 0 1,1 56,0" />
-        <path id="bottomTextPath" d="M22,50 a28,28 0 1,0 56,0" />
-      </defs>
-
-      {/* Top Text */}
-      <text fill="#0A0A0A" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
-        <textPath xlinkHref="#topTextPath" startOffset="50%" textAnchor="middle">
-          DENTON
-        </textPath>
-      </text>
-
-      {/* Bottom Text */}
-      <text fill="#0A0A0A" fontSize="9" fontWeight="bold" fontFamily="sans-serif">
-        <textPath xlinkHref="#bottomTextPath" startOffset="50%" textAnchor="middle" dy="7">
-          INSURANCE
-        </textPath>
-      </text>
-
-      {/* Dots */}
-      <circle cx="20" cy="50" r="1.5" fill="#0A0A0A" />
-      <circle cx="80" cy="50" r="1.5" fill="#0A0A0A" />
     </svg>
+  );
+}
+
+export default function Logo({
+  className = "",
+  iconOnly = false,
+  withTagline = false,
+  withAccentBar = false,
+  theme = 'auto',
+  size = 'md'
+}: LogoProps) {
+  const iconSizes = {
+    sm: "w-7 h-7",
+    md: "w-9 h-9",
+    lg: "w-12 h-12"
+  };
+
+  const titleSizes = {
+    sm: "text-lg",
+    md: "text-xl md:text-2xl",
+    lg: "text-3xl md:text-4xl"
+  };
+
+  const textColor = 
+    theme === 'dark' 
+      ? 'text-[#FAF7F2]' 
+      : theme === 'light' 
+      ? 'text-[#16110D]' 
+      : 'text-current';
+
+  return (
+    <div className={`flex flex-col ${className}`}>
+      <div className="flex items-center gap-3.5">
+        <div className="text-clay shrink-0 transition-transform duration-300 group-hover:scale-105">
+          <ShieldCheckLogoIcon className={iconSizes[size]} />
+        </div>
+        
+        {!iconOnly && (
+          <div className="flex flex-col justify-center">
+            <span 
+              className={`font-serif font-bold tracking-tight ${titleSizes[size]} ${textColor} leading-none`}
+              style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
+            >
+              Denton Insurance
+            </span>
+            {withTagline && (
+              <span className="text-[9px] md:text-[10px] uppercase font-semibold text-clay tracking-[0.28em] mt-1.5 leading-none">
+                Protection You Can Trust
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+
+      {withAccentBar && (
+        <div className="w-12 h-1 bg-clay rounded-full mt-3" />
+      )}
+    </div>
   );
 }

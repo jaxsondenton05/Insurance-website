@@ -1,8 +1,9 @@
 import React from "react";
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
-import Services from "../components/Services";
 import About from "../components/About";
+import Services from "../components/Services";
+import BusinessCardShowcase from "../components/BusinessCardShowcase";
 import LeadForm from "../components/LeadForm";
 import Footer from "../components/Footer";
 import { motion, useScroll, useSpring } from "motion/react";
@@ -16,7 +17,8 @@ export default function Home() {
   });
 
   return (
-    <main className="relative">
+    <main className="relative bg-[#16110D] text-bone font-sans min-h-screen">
+      {/* Scroll Progress Bar in Terracotta Accent */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-clay origin-left z-[60]"
         style={{ scaleX }}
@@ -24,19 +26,15 @@ export default function Home() {
       
       <Navbar />
       <Hero />
-      
-      <div className="relative">
-        <div className="absolute inset-0 bg-obsidian z-[-1]" />
-        <Services />
-        <About />
-        <LeadForm />
-      </div>
-
+      <About />
+      <Services />
+      <BusinessCardShowcase />
+      <LeadForm />
       <Footer />
 
-      {/* Decorative vertical line */}
-      <div className="fixed left-6 top-0 bottom-0 w-px bg-white/5 hidden xl:block" />
-      <div className="fixed right-6 top-0 bottom-0 w-px bg-white/5 hidden xl:block" />
+      {/* Subtle architectural vertical grid lines for ultra-wide displays */}
+      <div className="fixed left-6 top-0 bottom-0 w-px bg-white/5 pointer-events-none hidden 2xl:block z-40" />
+      <div className="fixed right-6 top-0 bottom-0 w-px bg-white/5 pointer-events-none hidden 2xl:block z-40" />
     </main>
   );
 }
