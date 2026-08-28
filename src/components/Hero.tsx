@@ -1,43 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { motion } from "motion/react";
-import { ArrowRight, Phone, CheckCircle2, Sparkles, ShieldCheck } from "lucide-react";
+import { ArrowRight, Phone, CheckCircle2, ShieldCheck } from "lucide-react";
 import heroBg from "../assets/images/professional_hero_bg_1780265987302.png";
-import jaxHeadshotFallback from "../assets/images/jax_headshot_1787874604205.jpg";
-
-interface CropSettings {
-  zoom: number;
-  posY: number;
-  posX: number;
-}
-
-const DEFAULT_CROP: CropSettings = {
-  zoom: 1.25,
-  posY: 20,
-  posX: 50,
-};
+import jaxHeadshot from "../assets/images/jax_headshot.png";
 
 export default function Hero() {
-  const [currentHeadshot, setCurrentHeadshot] = useState<string>("/pictures/jax_headshot.png");
-  const [crop, setCrop] = useState<CropSettings>(DEFAULT_CROP);
-
-  useEffect(() => {
-    // Check if user uploaded a headshot previously in local storage
-    const savedLocal = localStorage.getItem("jax_headshot_custom");
-    if (savedLocal) {
-      setCurrentHeadshot(savedLocal);
-    }
-
-    // Check saved crop settings
-    const savedCrop = localStorage.getItem("jax_headshot_crop");
-    if (savedCrop) {
-      try {
-        setCrop(JSON.parse(savedCrop));
-      } catch (e) {
-        console.warn("Could not parse saved crop", e);
-      }
-    }
-  }, []);
-
   return (
     <header className="relative min-h-screen pt-24 pb-16 flex items-center overflow-hidden bg-[#16110D]" id="hero">
 
@@ -161,20 +128,15 @@ export default function Hero() {
                 {/* Image Container with Custom Zoom and Crop Positioning */}
                 <div className="relative w-full h-[460px] sm:h-[500px] lg:h-[540px] overflow-hidden bg-[#16110D]">
                   <img
-                    src={currentHeadshot}
+                    src={jaxHeadshot}
                     alt="Jaxson Denton - Licensed Independent Insurance Agent"
-                    className="w-full h-full object-cover transition-all duration-200"
+                    className="w-full h-full object-cover"
                     style={{
-                      transform: `scale(${crop.zoom})`,
-                      transformOrigin: `${crop.posX}% ${crop.posY}%`,
-                      objectPosition: `${crop.posX}% ${crop.posY}%`,
+                      transform: "scale(1.25)",
+                      transformOrigin: "50% 20%",
+                      objectPosition: "50% 20%",
                     }}
                     referrerPolicy="no-referrer"
-                    onError={() => {
-                      if (currentHeadshot !== jaxHeadshotFallback) {
-                        setCurrentHeadshot(jaxHeadshotFallback);
-                      }
-                    }}
                   />
                 </div>
 

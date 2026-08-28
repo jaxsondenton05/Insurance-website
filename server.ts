@@ -18,34 +18,6 @@ async function startServer() {
   app.use(express.json({ limit: "50mb" }));
 
   // API Routes
-  app.post("/api/upload-headshot", (req, res) => {
-    try {
-      const { imageBase64, filename } = req.body;
-      if (!imageBase64) {
-        return res.status(400).json({ success: false, error: "No image data provided" });
-      }
-
-      const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, "");
-      const buffer = Buffer.from(base64Data, "base64");
-
-      const publicPicturesDir = path.join(process.cwd(), "public", "pictures");
-      if (!fs.existsSync(publicPicturesDir)) {
-        fs.mkdirSync(publicPicturesDir, { recursive: true });
-      }
-
-      const savePath1 = path.join(publicPicturesDir, "jax_headshot.png");
-      const savePath2 = path.join(process.cwd(), "public", "Jax Professional Headshot.png");
-      
-      fs.writeFileSync(savePath1, buffer);
-      fs.writeFileSync(savePath2, buffer);
-
-      console.log("Successfully saved headshot to disk at", savePath1);
-      return res.status(200).json({ success: true, url: "/pictures/jax_headshot.png?t=" + Date.now() });
-    } catch (err: any) {
-      console.error("Failed to save headshot:", err);
-      return res.status(500).json({ success: false, error: err.message });
-    }
-  });
   app.post("/api/sync-to-sheet", async (req, res) => {
     console.log("Received sync request for:", req.body?.email);
     try {
