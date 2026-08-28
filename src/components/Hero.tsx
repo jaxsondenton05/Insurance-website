@@ -126,18 +126,23 @@ export default function Hero() {
                 {/* Framed Image Container */}
               <div className="relative rounded-2xl overflow-hidden border border-[#3E2E25] bg-[#1E1712] shadow-2xl">
                 {/* Image Container with Custom Zoom and Crop Positioning */}
-                <div className="relative w-full h-[460px] sm:h-[500px] lg:h-[540px] overflow-hidden bg-[#16110D]">
+                <div className="relative w-full h-[460px] sm:h-[500px] lg:h-[540px] overflow-hidden bg-[#16110D] select-none">
                   <img
                     src={jaxHeadshot}
                     alt="Jaxson Denton - Licensed Independent Insurance Agent"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover pointer-events-none select-none"
                     style={{
                       transform: "scale(1.25)",
                       transformOrigin: "50% 20%",
                       objectPosition: "50% 20%",
                     }}
                     referrerPolicy="no-referrer"
+                    draggable={false}
+                    data-search-disable="true"
+                    aria-hidden="false"
                   />
+                  {/* Invisible Overlay Shield to completely block browser visual search hover menus */}
+                  <div className="absolute inset-0 z-10 select-none pointer-events-auto" />
                 </div>
 
                 {/* Subtle Gradient Shadow at the bottom of the photo */}

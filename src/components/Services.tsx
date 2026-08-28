@@ -95,10 +95,12 @@ export default function Services() {
                 <img 
                   src={service.image} 
                   alt={service.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 pointer-events-none select-none"
                   referrerPolicy="no-referrer"
+                  draggable={false}
+                  data-search-disable="true"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-auto" />
                 
                 {/* Badge from business card */}
                 <div className="absolute top-4 left-4 flex items-center gap-2">

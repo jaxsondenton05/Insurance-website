@@ -49,7 +49,7 @@ export default function Footer() {
             <ul className="space-y-2.5 text-sm font-light">
               {[
                 { name: "Home", href: "#" },
-                { name: "The Honest Story", href: "#about" },
+                { name: "Origin", href: "#about" },
                 { name: "Coverage Options", href: "#services" },
                 { name: "Direct Contact Card", href: "#business-card" },
                 { name: "Free Quote Sheet", href: "#contact" }

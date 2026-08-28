@@ -19,7 +19,7 @@ export default function Navbar() {
               href="#about"
               className="text-[11px] sm:text-xs font-semibold text-bone/80 hover:text-clay transition-colors uppercase tracking-wider sm:tracking-[0.18em] whitespace-nowrap px-1.5 py-1"
             >
-              The Story
+              Origin
             </a>
             <a 
               href="#services"
