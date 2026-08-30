@@ -19,7 +19,7 @@ export default function Navbar() {
               href="#about"
               className="text-[11px] sm:text-xs font-semibold text-bone/80 hover:text-clay transition-colors uppercase tracking-wider sm:tracking-[0.18em] whitespace-nowrap px-1.5 py-1"
             >
-              Origin
+              Our Origins
             </a>
             <a 
               href="#services"
@@ -28,10 +28,10 @@ export default function Navbar() {
               Coverage
             </a>
             <a 
-              href="#business-card"
+              href="#privacy"
               className="text-[11px] sm:text-xs font-semibold text-bone/80 hover:text-clay transition-colors uppercase tracking-wider sm:tracking-[0.18em] whitespace-nowrap px-1.5 py-1"
             >
-              Contact Card
+              Privacy & Trust
             </a>
 
             <div className="hidden sm:block h-4 w-px bg-white/15 shrink-0" />

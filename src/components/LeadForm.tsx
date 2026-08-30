@@ -1,5 +1,5 @@
 import React from "react";
-import { Phone, Mail, ShieldCheck, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, CheckCircle2 } from "lucide-react";
 import JotFormEmbed from "./JotFormEmbed";
 
 export default function LeadForm() {
@@ -24,32 +24,12 @@ export default function LeadForm() {
               <ShieldCheck className="w-3.5 h-3.5" />
               100% Free • No Obligation
             </span>
-            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#16110D] tracking-tight mb-3">
-              Let's Go Save You <span className="italic text-clay">Some Money</span>
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#16110D] tracking-tight mb-4">
+              Let's Go Save You Some <span className="italic text-clay">Money</span>
             </h2>
-            <div className="w-16 h-1 bg-clay rounded-full mx-auto mb-4" />
             <p className="text-base sm:text-lg text-[#7A6E65] font-light max-w-xl mx-auto leading-relaxed">
-              Fill out the quote sheet below. I'll search dozens of carriers to find you real, honest rates. You lose nothing, and there's zero pressure.
+              Fill out the quote sheet below! Once submitted, I'll contact you soon to continue the quoting process and get you set up with the carrier you want.
             </p>
-
-            {/* Quick Contact Bar */}
-            <div className="flex flex-wrap items-center justify-center gap-6 mt-5 text-xs text-[#52463E]">
-              <a 
-                href="tel:9493970449"
-                className="inline-flex items-center gap-2 font-medium hover:text-clay transition-colors"
-              >
-                <Phone className="w-3.5 h-3.5 text-clay" />
-                <span>Call or Text: (949) 397-0449</span>
-              </a>
-              <span className="hidden sm:inline text-neutral-300">•</span>
-              <a 
-                href="mailto:jaxson@crgia.com"
-                className="inline-flex items-center gap-2 font-medium hover:text-clay transition-colors"
-              >
-                <Mail className="w-3.5 h-3.5 text-clay" />
-                <span>Email: jaxson@crgia.com</span>
-              </a>
-            </div>
           </div>
 
           {/* Secure Form Wrapper */}

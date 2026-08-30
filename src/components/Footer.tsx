@@ -26,10 +26,8 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="w-12 h-1 bg-clay rounded-full" />
-
             {/* Badges from business card */}
-            <div className="flex items-center gap-2 pt-1">
+            <div className="flex items-center gap-2">
               {["AUTO", "HOME", "BUSINESS"].map((line) => (
                 <span
                   key={line}
@@ -49,9 +47,9 @@ export default function Footer() {
             <ul className="space-y-2.5 text-sm font-light">
               {[
                 { name: "Home", href: "#" },
-                { name: "Origin", href: "#about" },
+                { name: "Our Origins", href: "#about" },
                 { name: "Coverage Options", href: "#services" },
-                { name: "Direct Contact Card", href: "#business-card" },
+                { name: "Privacy & Trust Guarantee", href: "#privacy" },
                 { name: "Free Quote Sheet", href: "#contact" }
               ].map(item => (
                 <li key={item.name}>

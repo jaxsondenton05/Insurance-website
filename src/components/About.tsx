@@ -37,7 +37,11 @@ export default function About() {
             </p>
 
             <p>
-              Those of you who know me know that I love cars, am enrolled in college, working full-time, and that I'm starting my own insurance business at 20 years old.
+              To those of you who don't know me, here's the scoop:
+            </p>
+
+            <p>
+              I love cars, I'm enrolled in college, I'm currently working full time outside of insurance, and I've started a business as an independent agent at 20 years old.
             </p>
 
             <p>
@@ -45,7 +49,7 @@ export default function About() {
             </p>
 
             <p>
-              I'm also young enough to have entered the adult world being smacked in the face by three realities:
+              And I, like many of you, have been smacked in the face by 3 realities:
             </p>
 
             {/* 3 Realities Box */}

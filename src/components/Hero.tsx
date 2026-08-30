@@ -43,9 +43,8 @@ export default function Hero() {
 
             {/* Main Headline */}
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-bone leading-[1.08] tracking-tight mb-5">
-              Tired of Over-Paying <br />
-              <span className="italic text-clay">For Your Car & Home</span> <br />
-              Insurance?
+              Tired of Overpaying <br />
+              <span className="italic text-clay">for Insurance?</span>
             </h1>
 
             {/* Signature Terracotta Horizontal Accent Bar */}
@@ -54,13 +53,13 @@ export default function Hero() {
             {/* Short, punchy conversational intro */}
             <div className="space-y-3 text-base sm:text-lg text-bone/80 font-light leading-relaxed max-w-xl mb-6">
               <p>
-                Hi, I'm <strong className="text-bone font-medium">Jaxson Denton</strong>.
+                Hi, I'm <strong className="text-bone font-medium">Jaxson Denton</strong>. I'm an independent insurance agent serving Texas and Louisiana.
               </p>
               <p>
-                I'm an independent insurance agent serving Texas and Louisiana, and I help people find real, honest savings on their insurance without the confusing sales jargon.
+                I provide 100% free quotes for auto, home, and business insurance from dozens of top-rated carriers!
               </p>
-              <p className="text-sm sm:text-base text-bone/70">
-                Because I'm independent, I don't work for one single insurance company. I compare dozens of top-rated carriers so you get the best price for your budget.
+              <p className="text-clay font-medium">
+                Let's get started!
               </p>
             </div>
 
@@ -102,9 +101,6 @@ export default function Hero() {
             <div className="flex flex-wrap items-center gap-4 mt-6 text-xs text-bone/60">
               <span className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 text-clay" /> Free, no-obligation quotes
-              </span>
-              <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-clay" /> No spam calls
               </span>
               <span className="flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5 text-clay" /> Licensed in Texas & Louisiana

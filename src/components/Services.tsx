@@ -7,9 +7,8 @@ const services = [
     id: "auto",
     badge: "AUTO",
     title: "Car Insurance",
-    subtitle: "State-Minimum to Full Coverage",
     icon: <Car className="w-6 h-6" />,
-    description: "I love cars, and I hate overpaying for them. Whether you just need cheap state-minimums to stay legally on the street or full collision & comprehensive, I'll shop the market to get you the lowest rate.",
+    description: "I love cars, and I hate overpaying for them. Whether you just need cheap state minimums or full collision & comprehensive, I'll shop the market to get you the lowest rate.",
     highlights: [
       "Young driver & good student savings",
       "Cheapest state-minimum options",
@@ -22,7 +21,6 @@ const services = [
     id: "home",
     badge: "HOME",
     title: "Home & Renters",
-    subtitle: "Protecting What You Built",
     icon: <HomeIcon className="w-6 h-6" />,
     description: "Texas and Louisiana weather doesn't mess around. I make sure your house, roof, and belongings are covered against storms and unexpected accidents without pushing useless add-ons.",
     highlights: [
@@ -37,9 +35,8 @@ const services = [
     id: "business",
     badge: "BUSINESS",
     title: "Commercial & Business",
-    subtitle: "Texas & Louisiana Business Coverage",
     icon: <Building2 className="w-6 h-6" />,
-    description: "Starting and running a business is hard enough. I help self-starters and commercial business owners protect their vehicles, property, and general liability with honest rates.",
+    description: "I help self-starters and commercial business owners in Texas and Louisiana find rates for vehicle, property, and general liability policies quickly and efficiently.",
     highlights: [
       "General Liability & Business Owner's Policies",
       "Commercial work vehicles & fleet",
@@ -71,11 +68,11 @@ export default function Services() {
             What I Shop For You
           </span>
           <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#16110D] tracking-tight mb-3">
-            Coverage for <span className="italic text-clay">Real Life</span>
+            Coverage and Pricing <span className="italic text-clay">You Want</span>
           </h2>
           <div className="w-16 h-1 bg-clay rounded-full mb-4" />
           <p className="text-base sm:text-lg text-[#7A6E65] font-light leading-relaxed">
-            I don't push one-size-fits-all policies. You tell me what you need and what budget you want to hit, and I'll find the carrier that matches.
+            Tell me what you need and what budget you want to hit and I'll find a carrier that matches.
           </p>
         </div>
 
@@ -117,12 +114,9 @@ export default function Services() {
               {/* Card Body */}
               <div className="p-6 flex-1 flex flex-col justify-between">
                 <div>
-                  <h3 className="font-serif text-2xl font-bold text-[#16110D] tracking-tight mb-1">
+                  <h3 className="font-serif text-2xl font-bold text-[#16110D] tracking-tight mb-3">
                     {service.title}
                   </h3>
-                  <p className="text-xs uppercase font-medium tracking-wider text-clay mb-3">
-                    {service.subtitle}
-                  </p>
                   <p className="text-sm text-[#7A6E65] leading-relaxed mb-5 font-light">
                     {service.description}
                   </p>
@@ -155,13 +149,13 @@ export default function Services() {
             Need Auto + Home Together?
           </p>
           <p className="text-xs sm:text-sm text-[#7A6E65] mb-4 font-light">
-            Bundling can unlock major multi-policy discounts across our partner carriers.
+            Bundling can unlock major discounts!
           </p>
           <a
             href="#contact"
             className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-clay hover:bg-clay-hover text-bone rounded-lg text-xs font-bold uppercase tracking-wider transition-all duration-200 shadow-md hover:scale-[1.02]"
           >
-            <span>Go to Quote Sheet for Bundle Rates</span>
+            <span>Go to Quote Sheet</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </a>
         </div>
