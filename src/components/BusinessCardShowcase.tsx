@@ -375,14 +375,14 @@ export default function BusinessCardShowcase() {
                     {/* Email */}
                     <div className="flex items-center justify-between group">
                       <a
-                        href="mailto:jaxson@crgia.com"
+                        href="mailto:jaxson@dentoninsurance.org"
                         className="flex items-center gap-3.5 text-bone/90 hover:text-clay transition-colors text-sm sm:text-base font-medium"
                       >
                         <Mail className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-clay shrink-0" />
-                        <span>jaxson@crgia.com</span>
+                        <span>jaxson@dentoninsurance.org</span>
                       </a>
                       <button
-                        onClick={() => copyToClipboard('jaxson@crgia.com', 'email')}
+                        onClick={() => copyToClipboard('jaxson@dentoninsurance.org', 'email')}
                         className="p-1.5 text-bone/40 hover:text-clay transition-colors"
                         title="Copy email"
                         aria-label="Copy email address"
@@ -514,11 +514,11 @@ export default function BusinessCardShowcase() {
               Call (949) 397-0449
             </a>
             <a
-              href="mailto:jaxson@crgia.com"
+              href="mailto:jaxson@dentoninsurance.org"
               className="inline-flex items-center gap-2 px-6 py-3 bg-[#241B15] text-bone font-semibold text-xs uppercase tracking-wider rounded-md hover:bg-[#35271F] transition-colors border border-[#35271F]"
             >
               <Mail className="w-4 h-4 text-clay" />
-              Email jaxson@crgia.com
+              Email jaxson@dentoninsurance.org
             </a>
           </div>
         </div>
