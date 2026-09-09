@@ -9,14 +9,18 @@ import {
   PenSquare, 
   ExternalLink, 
   Play, 
-  Pause
+  Pause,
+  Upload,
+  CheckCircle2
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { DEFAULT_GOOGLE_REVIEWS } from "../data/defaultReviews";
 import { 
   ReviewScreenshot, 
-  getAllScreenshots 
+  getAllScreenshots, 
+  saveScreenshot 
 } from "../utils/reviewStorage";
-import { DEFAULT_GOOGLE_REVIEWS } from "../data/defaultReviews";
+import persistedScreenshots from "../data/persistedScreenshots.json";
 
 interface GoogleReviewsProps {
   id?: string;
@@ -35,19 +39,45 @@ function GoogleColoredLogo({ className = "w-4 h-4" }: { className?: string }) {
 }
 
 export default function GoogleReviews({ id = "reviews", isStandalone = false }: GoogleReviewsProps) {
-  // Initialize with DEFAULT_GOOGLE_REVIEWS immediately so carousel is never blank
-  const [screenshots, setScreenshots] = useState<ReviewScreenshot[]>(DEFAULT_GOOGLE_REVIEWS);
+  // Prioritize persisted screenshots from repository, otherwise default reviews
+  const [screenshots, setScreenshots] = useState<ReviewScreenshot[]>(() => {
+    if (Array.isArray(persistedScreenshots) && persistedScreenshots.length > 0) {
+      return persistedScreenshots as ReviewScreenshot[];
+    }
+    return DEFAULT_GOOGLE_REVIEWS;
+  });
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
   const carouselContainerRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load screenshots from storage (IndexedDB / localStorage)
+  // If user previously uploaded screenshots in this browser, restore them and save to server
   useEffect(() => {
     async function load() {
       try {
-        const data = await getAllScreenshots();
-        if (data && data.length > 0) {
-          setScreenshots(data);
+        const stored = await getAllScreenshots();
+        if (stored && stored.length > 0) {
+          // Identify user-uploaded screenshots (non-sample / containing screenshot id or custom image)
+          const userScreenshots = stored.filter(
+            (s) => s.id?.startsWith("screenshot-") || (!s.reviewText && s.imageData && !s.id?.startsWith("review-"))
+          );
+
+          if (userScreenshots.length > 0) {
+            setScreenshots(userScreenshots);
+            // Automatically persist to server JSON so it's committed to GitHub
+            fetch("/api/save-review-screenshots", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ screenshots: userScreenshots }),
+            }).catch(() => {});
+          } else if (Array.isArray(persistedScreenshots) && persistedScreenshots.length > 0) {
+            setScreenshots(persistedScreenshots as ReviewScreenshot[]);
+          }
+        } else if (Array.isArray(persistedScreenshots) && persistedScreenshots.length > 0) {
+          setScreenshots(persistedScreenshots as ReviewScreenshot[]);
         }
       } catch (err) {
         console.error("Failed to load screenshots:", err);
@@ -55,6 +85,51 @@ export default function GoogleReviews({ id = "reviews", isStandalone = false }: 
     }
     load();
   }, []);
+
+  // Handle file uploads (click or drag-and-drop)
+  const handleFileUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const newItems: ReviewScreenshot[] = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (!file.type.startsWith("image/")) continue;
+
+      const base64 = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target?.result as string);
+        reader.readAsDataURL(file);
+      });
+
+      const item: ReviewScreenshot = {
+        id: `screenshot-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+        imageData: base64,
+        dateAdded: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+        caption: file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " "),
+      };
+
+      await saveScreenshot(item);
+      newItems.push(item);
+    }
+
+    if (newItems.length > 0) {
+      setScreenshots((prev) => {
+        // Filter out default synthetic items if we now have real user screenshots
+        const prevUserItems = prev.filter((p) => p.id.startsWith("screenshot-") || !p.reviewText);
+        const updated = [...newItems, ...prevUserItems];
+        // Auto-save to server
+        fetch("/api/save-review-screenshots", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ screenshots: updated }),
+        }).catch(() => {});
+        return updated;
+      });
+
+      setUploadSuccess(true);
+      setTimeout(() => setUploadSuccess(false), 3000);
+    }
+  };
 
   // Keyboard navigation for lightbox
   useEffect(() => {
@@ -96,6 +171,20 @@ export default function GoogleReviews({ id = "reviews", isStandalone = false }: 
   return (
     <section 
       id={id} 
+      onDragOver={(e) => {
+        e.preventDefault();
+        setIsDragging(true);
+      }}
+      onDragLeave={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+          setIsDragging(false);
+        }
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        setIsDragging(false);
+        handleFileUpload(e.dataTransfer.files);
+      }}
       className={`relative bg-[#16110D] text-bone border-b border-[#35271F] overflow-hidden ${
         isStandalone ? "py-24" : "py-12 sm:py-16"
       }`}
@@ -189,11 +278,53 @@ export default function GoogleReviews({ id = "reviews", isStandalone = false }: 
               >
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
+
+              {/* Dev upload trigger (visible in development preview, hidden in production) */}
+              {import.meta.env.DEV && (
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E1712] border border-[#35271F] hover:border-clay hover:text-clay transition-colors text-[11px] cursor-pointer ml-1"
+                  title="Upload screenshot from Google Reviews"
+                >
+                  <Upload className="w-3 h-3 text-clay" />
+                  <span>Upload Screenshot</span>
+                </button>
+              )}
+
+              {uploadSuccess && (
+                <span className="inline-flex items-center gap-1 text-[11px] text-emerald-400 ml-1">
+                  <CheckCircle2 className="w-3 h-3" />
+                  Saved to website!
+                </span>
+              )}
             </div>
+
+            {/* Hidden file input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={(e) => handleFileUpload(e.target.files)}
+              accept="image/*"
+              multiple
+              className="hidden"
+            />
           </div>
 
         </div>
       </div>
+
+      {/* Drag & Drop Visual Indicator */}
+      {isDragging && (
+        <div className="absolute inset-0 bg-black/85 z-50 flex flex-col items-center justify-center border-2 border-dashed border-clay p-6 pointer-events-none backdrop-blur-sm">
+          <Upload className="w-12 h-12 text-clay animate-bounce mb-3" />
+          <p className="font-serif text-xl font-bold text-bone mb-1">
+            Drop Google Review Screenshots Here
+          </p>
+          <p className="text-sm text-bone/70">
+            They will be automatically added to the carousel and saved to your website!
+          </p>
+        </div>
+      )}
 
       {/* Full-width Carousel Slider (Left-to-Right) */}
       <div className="relative w-full overflow-hidden py-4 sm:py-6">

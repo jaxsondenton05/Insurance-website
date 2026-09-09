@@ -1,6 +1,7 @@
 // Client-side persistent storage for Google Review Screenshots using IndexedDB with localStorage fallback
 
 import { DEFAULT_GOOGLE_REVIEWS } from "../data/defaultReviews";
+import persistedScreenshots from "../data/persistedScreenshots.json";
 
 export interface ReviewScreenshot {
   id: string;
@@ -78,6 +79,11 @@ export async function getAllScreenshots(): Promise<ReviewScreenshot[]> {
     // ignore
   }
 
+  // Fallback to persistedScreenshots from repo
+  if (Array.isArray(persistedScreenshots) && persistedScreenshots.length > 0) {
+    return persistedScreenshots as ReviewScreenshot[];
+  }
+
   // If user has no custom uploads yet, return the built-in verified reviews
   return DEFAULT_GOOGLE_REVIEWS;
 }
@@ -98,10 +104,22 @@ export async function saveScreenshot(screenshot: ReviewScreenshot): Promise<void
     try {
       const current = await getAllScreenshots();
       const updated = [screenshot, ...current.filter((s) => s.id !== screenshot.id)];
-      localStorage.setItem("denton_google_screenshots", JSON.stringify(updated.slice(0, 10)));
+      localStorage.setItem("denton_google_screenshots", JSON.stringify(updated.slice(0, 15)));
     } catch {
       // Storage error ignored
     }
+  }
+
+  // Also sync to server backend so it gets committed to GitHub
+  try {
+    const all = await getAllScreenshots();
+    fetch("/api/save-review-screenshots", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ screenshots: all.length > 0 ? all : [screenshot] }),
+    }).catch(() => {});
+  } catch {
+    // ignore
   }
 }
 

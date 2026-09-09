@@ -12,6 +12,7 @@ export interface GoogleReviewItem {
   avatarInitial: string;
   likesCount: number;
   imageData: string; // SVG Data URI
+  caption?: string;
 }
 
 function escapeXml(unsafe: string): string {

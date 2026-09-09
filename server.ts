@@ -130,6 +130,22 @@ async function startServer() {
     }
   });
 
+  app.post("/api/save-review-screenshots", (req, res) => {
+    try {
+      const screenshots = req.body?.screenshots;
+      if (Array.isArray(screenshots) && screenshots.length > 0) {
+        const filePath = path.join(process.cwd(), "src", "data", "persistedScreenshots.json");
+        fs.writeFileSync(filePath, JSON.stringify(screenshots, null, 2));
+        console.log(`Successfully persisted ${screenshots.length} review screenshots to ${filePath}`);
+        return res.json({ success: true, count: screenshots.length });
+      }
+      return res.json({ success: false, message: "No screenshots provided" });
+    } catch (err: any) {
+      console.error("Error saving review screenshots:", err);
+      return res.status(500).json({ success: false, error: err.message });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
