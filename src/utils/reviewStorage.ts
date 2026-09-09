@@ -1,7 +1,6 @@
 // Client-side persistent storage for Google Review Screenshots using IndexedDB with localStorage fallback
 
 import { DEFAULT_GOOGLE_REVIEWS } from "../data/defaultReviews";
-import persistedScreenshots from "../data/persistedScreenshots.json";
 
 export interface ReviewScreenshot {
   id: string;
@@ -90,12 +89,7 @@ export async function getAllScreenshots(): Promise<ReviewScreenshot[]> {
     // ignore
   }
 
-  // Fallback to persistedScreenshots from repo
-  if (Array.isArray(persistedScreenshots) && persistedScreenshots.length > 0) {
-    return persistedScreenshots as ReviewScreenshot[];
-  }
-
-  // If user has no custom uploads yet, return the built-in verified reviews
+  // Fallback to built-in verified review screenshot assets
   return DEFAULT_GOOGLE_REVIEWS;
 }
 

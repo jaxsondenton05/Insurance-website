@@ -20,7 +20,6 @@ import {
   getAllScreenshots, 
   saveScreenshot 
 } from "../utils/reviewStorage";
-import persistedScreenshots from "../data/persistedScreenshots.json";
 
 interface GoogleReviewsProps {
   id?: string;
@@ -39,13 +38,8 @@ function GoogleColoredLogo({ className = "w-4 h-4" }: { className?: string }) {
 }
 
 export default function GoogleReviews({ id = "reviews", isStandalone = false }: GoogleReviewsProps) {
-  // Prioritize persisted screenshots from repository, otherwise default reviews
-  const [screenshots, setScreenshots] = useState<ReviewScreenshot[]>(() => {
-    if (Array.isArray(persistedScreenshots) && persistedScreenshots.length > 0) {
-      return persistedScreenshots as ReviewScreenshot[];
-    }
-    return DEFAULT_GOOGLE_REVIEWS;
-  });
+  // Use verified Google Review screenshot assets as primary source
+  const [screenshots, setScreenshots] = useState<ReviewScreenshot[]>(DEFAULT_GOOGLE_REVIEWS);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -54,31 +48,22 @@ export default function GoogleReviews({ id = "reviews", isStandalone = false }: 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load screenshots from storage (IndexedDB / localStorage)
-  // If user previously uploaded screenshots in this browser, restore them and save to server
+  // If user previously uploaded additional screenshots in this browser, restore them
   useEffect(() => {
     async function load() {
       try {
         const stored = await getAllScreenshots();
         if (stored && stored.length > 0) {
-          // Identify user-uploaded screenshots (non-sample / containing screenshot id or custom image)
           const userScreenshots = stored.filter(
-            (s) => s.id?.startsWith("screenshot-") || (!s.reviewText && s.imageData && !s.id?.startsWith("review-"))
+            (s) => !s.id?.startsWith("review-") && !s.isSample && Boolean(s.imageData)
           );
 
           if (userScreenshots.length > 0) {
             setScreenshots(userScreenshots);
-            // Automatically persist to server JSON so it's committed to GitHub
-            fetch("/api/save-review-screenshots", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ screenshots: userScreenshots }),
-            }).catch(() => {});
-          } else if (Array.isArray(persistedScreenshots) && persistedScreenshots.length > 0) {
-            setScreenshots(persistedScreenshots as ReviewScreenshot[]);
+            return;
           }
-        } else if (Array.isArray(persistedScreenshots) && persistedScreenshots.length > 0) {
-          setScreenshots(persistedScreenshots as ReviewScreenshot[]);
         }
+        setScreenshots(DEFAULT_GOOGLE_REVIEWS);
       } catch (err) {
         console.error("Failed to load screenshots:", err);
       }
