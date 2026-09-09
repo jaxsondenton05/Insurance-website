@@ -60,7 +60,13 @@ export async function getAllScreenshots(): Promise<ReviewScreenshot[]> {
     });
 
     if (idbResult && idbResult.length > 0) {
-      return idbResult;
+      // Filter out any legacy synthetic sample reviews
+      const valid = idbResult.filter(
+        (item) => !item.id?.startsWith("review-") && !item.isSample && Boolean(item.imageData)
+      );
+      if (valid.length > 0) {
+        return valid;
+      }
     }
   } catch {
     // Proceed to localStorage check
@@ -72,7 +78,12 @@ export async function getAllScreenshots(): Promise<ReviewScreenshot[]> {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+        const valid = parsed.filter(
+          (item: any) => !item.id?.startsWith("review-") && !item.isSample && Boolean(item.imageData)
+        );
+        if (valid.length > 0) {
+          return valid;
+        }
       }
     }
   } catch {
