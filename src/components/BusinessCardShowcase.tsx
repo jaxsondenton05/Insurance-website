@@ -41,7 +41,7 @@ export default function BusinessCardShowcase() {
       icon: Lock,
       title: "Zero Data Brokers",
       badge: "Zero Spam / Zero Selling",
-      desc: "We will never sell, rent, or distribute your personal details. Denton Insurance uses your information solely to: (1) calculate the quote you requested, (2) contact you regarding your quote or policy, and (3) send policy renewal reminders and updates with your consent."
+      desc: "We will never sell, rent, or distribute your personal details. Denton Insurance, LLC uses your information solely to: (1) calculate the quote you requested, (2) contact you regarding your quote or policy, and (3) send policy renewal reminders and updates with your consent."
     },
     {
       icon: CreditCard,
@@ -228,7 +228,7 @@ export default function BusinessCardShowcase() {
 
                   <div className="mt-5 pt-3 border-t border-white/5 flex items-center gap-1.5 text-[11px] font-medium text-emerald-400">
                     <Check className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Guaranteed by Denton Insurance</span>
+                    <span>Guaranteed by Denton Insurance, LLC</span>
                   </div>
                 </div>
               );
@@ -340,7 +340,7 @@ export default function BusinessCardShowcase() {
                         <ShieldCheckLogoIcon className="w-8 h-8 sm:w-10 sm:h-10" />
                       </div>
                       <h3 className="font-serif text-2xl sm:text-3xl font-bold text-bone tracking-tight">
-                        Denton Insurance
+                        Denton Insurance, LLC
                       </h3>
                     </div>
                     <div className="w-14 h-1 bg-clay rounded-full mt-3" />
@@ -471,7 +471,7 @@ export default function BusinessCardShowcase() {
                       </div>
                       <div>
                         <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#16110D] tracking-tight leading-none">
-                          Denton Insurance
+                          Denton Insurance, LLC
                         </h3>
                         <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.26em] text-clay mt-1">
                           PROTECTION YOU CAN TRUST

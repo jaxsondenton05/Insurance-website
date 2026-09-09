@@ -18,7 +18,7 @@ export default function Footer() {
               </div>
               <div>
                 <h3 className="font-serif text-2xl font-bold text-bone tracking-tight leading-none">
-                  Denton Insurance
+                  Denton Insurance, LLC
                 </h3>
                 <p className="text-[10px] uppercase font-semibold text-clay tracking-[0.26em] mt-1">
                   PROTECTION YOU CAN TRUST
@@ -46,11 +46,12 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-sm font-light">
               {[
-                { name: "Home", href: "#" },
-                { name: "Our Origins", href: "#about" },
-                { name: "Coverage Options", href: "#services" },
-                { name: "Privacy & Trust Guarantee", href: "#privacy" },
-                { name: "Free Quote Sheet", href: "#contact" }
+                { name: "Reviews", href: "/#reviews" },
+                { name: "Home", href: "/#home" },
+                { name: "Our Origins", href: "/#about" },
+                { name: "Coverage Options", href: "/#services" },
+                { name: "Privacy & Trust Guarantee", href: "/#privacy" },
+                { name: "Free Quote Sheet", href: "/#contact" }
               ].map(item => (
                 <li key={item.name}>
                   <a 
@@ -106,7 +107,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-6 border-t border-[#2E221B] flex justify-center items-center text-center">
           <p className="text-xs text-bone/40 font-light tracking-wide leading-relaxed">
-            Licensed Independent Insurance Agent in Texas & Louisiana • Proud Producer of CRG Insurance Agency (CRGIA)
+            &copy; {new Date().getFullYear()} Denton Insurance, LLC &bull; Licensed Independent Insurance Agent in Texas &amp; Louisiana &bull; Proud Producer of CRG Insurance Agency (CRGIA)
           </p>
         </div>
       </div>

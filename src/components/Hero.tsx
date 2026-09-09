@@ -6,7 +6,7 @@ import jaxHeadshot from "../assets/images/jax_headshot.png";
 
 export default function Hero() {
   return (
-    <header className="relative min-h-screen pt-24 pb-16 flex items-center overflow-hidden bg-[#16110D]" id="hero">
+    <header className="relative min-h-screen pt-24 pb-16 flex items-center overflow-hidden bg-[#16110D]" id="home">
 
       {/* Background Image with Warm Espresso Gradient Overlay */}
       <div className="absolute inset-0 z-0">

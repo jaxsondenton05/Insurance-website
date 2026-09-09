@@ -5,12 +5,14 @@
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
+import ReviewsPage from "./pages/ReviewsPage";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/reviews" element={<ReviewsPage />} />
       </Routes>
     </BrowserRouter>
   );

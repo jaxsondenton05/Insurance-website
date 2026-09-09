@@ -1,5 +1,6 @@
 import React from "react";
 import Navbar from "../components/Navbar";
+import GoogleReviews from "../components/GoogleReviews";
 import Hero from "../components/Hero";
 import About from "../components/About";
 import Services from "../components/Services";
@@ -26,6 +27,7 @@ export default function Home() {
       
       <Navbar />
       <Hero />
+      <GoogleReviews id="reviews" />
       <About />
       <Services />
       <BusinessCardShowcase />
