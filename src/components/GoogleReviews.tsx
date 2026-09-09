@@ -5,10 +5,10 @@ import {
   X, 
   ChevronLeft, 
   ChevronRight, 
-  ShieldCheck,
-  PenSquare,
-  ExternalLink,
-  Play,
+  ShieldCheck, 
+  PenSquare, 
+  ExternalLink, 
+  Play, 
   Pause
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
@@ -16,30 +16,41 @@ import {
   ReviewScreenshot, 
   getAllScreenshots 
 } from "../utils/reviewStorage";
+import { DEFAULT_GOOGLE_REVIEWS } from "../data/defaultReviews";
 
 interface GoogleReviewsProps {
   id?: string;
   isStandalone?: boolean;
 }
 
+function GoogleColoredLogo({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+    </svg>
+  );
+}
+
 export default function GoogleReviews({ id = "reviews", isStandalone = false }: GoogleReviewsProps) {
-  const [screenshots, setScreenshots] = useState<ReviewScreenshot[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // Initialize with DEFAULT_GOOGLE_REVIEWS immediately so carousel is never blank
+  const [screenshots, setScreenshots] = useState<ReviewScreenshot[]>(DEFAULT_GOOGLE_REVIEWS);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
   const carouselContainerRef = useRef<HTMLDivElement>(null);
 
-  // Load screenshots from storage
+  // Load screenshots from storage (IndexedDB / localStorage)
   useEffect(() => {
     async function load() {
-      setIsLoading(true);
       try {
         const data = await getAllScreenshots();
-        setScreenshots(data);
+        if (data && data.length > 0) {
+          setScreenshots(data);
+        }
       } catch (err) {
-        console.error("Failed to load screenshots", err);
-      } finally {
-        setIsLoading(false);
+        console.error("Failed to load screenshots:", err);
       }
     }
     load();
@@ -67,18 +78,17 @@ export default function GoogleReviews({ id = "reviews", isStandalone = false }: 
 
   // Construct duplicated items array for a seamless infinite loop sliding left to right
   const uniqueCount = screenshots.length;
-  // Duplicate base items so each set has at least 5 items, then double it for [Set A, Set B]
   const repeatFactor = uniqueCount > 0 ? Math.max(2, Math.ceil(5 / uniqueCount)) : 1;
   const singleSet = uniqueCount > 0 ? Array(repeatFactor).fill(screenshots).flat() : [];
   const displayItems = uniqueCount > 0 ? [...singleSet, ...singleSet] : [];
 
-  // Duration scales comfortably with number of items - much slower and gentler glide
-  const animDuration = Math.max(75, singleSet.length * 16);
+  // Gentle, slow glide speed
+  const animDuration = Math.max(45, singleSet.length * 10);
 
   // Manual nudge scroll functions
   const handleNudge = (direction: "left" | "right") => {
     if (carouselContainerRef.current) {
-      const scrollAmount = direction === "left" ? -350 : 350;
+      const scrollAmount = direction === "left" ? -380 : 380;
       carouselContainerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
     }
   };
@@ -119,76 +129,67 @@ export default function GoogleReviews({ id = "reviews", isStandalone = false }: 
             {/* Small "Reviews" Label */}
             <div className="flex items-center justify-center gap-2 mb-2.5">
               <span className="w-5 h-px bg-clay/50" />
-              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.28em] text-clay">
-                Reviews
+              <span className="text-[11px] uppercase tracking-[0.25em] font-semibold text-clay">
+                Client Testimonials
               </span>
               <span className="w-5 h-px bg-clay/50" />
             </div>
 
-            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#1E1712] border border-[#35271F] shadow-sm">
-              <svg className="w-4 h-4" viewBox="0 0 24 24">
-                <path
-                  fill="#4285F4"
-                  d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24Z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15Z"
-                />
-                <path
-                  fill="#EA4335"
-                  d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98Z"
-                />
-              </svg>
-              <span className="text-xs font-semibold text-bone/90 uppercase tracking-wider">
-                Google Business Profile Reviews
-              </span>
-              <span className="flex items-center gap-0.5 text-amber-400 pl-1 border-l border-[#35271F]">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+            {/* Headline */}
+            <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-bone mb-3">
+              What Clients Say About Denton Insurance
+            </h2>
+
+            {/* Trust badge with Google 5.0 Rating */}
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[#1E1712] border border-[#35271F] shadow-inner mb-4">
+              <GoogleColoredLogo className="w-4 h-4 shrink-0" />
+              <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-bone">
+                <span className="text-white">Google Reviews</span>
+                <span className="text-bone/50">•</span>
+                <span className="text-amber-400 font-bold">5.0</span>
+              </div>
+              <span className="flex text-amber-400">
+                {Array(5).fill(0).map((_, i) => (
+                  <Star key={i} className="w-3.5 h-3.5 fill-current" />
                 ))}
               </span>
             </div>
 
             {/* Carousel Control Strip */}
-            {screenshots.length > 0 && (
-              <div className="mt-4 flex items-center justify-center gap-3 text-xs text-bone/50">
-                <button
-                  onClick={() => handleNudge("left")}
-                  aria-label="Slide reviews left"
-                  className="p-1.5 rounded-full bg-[#1E1712] border border-[#35271F] hover:border-clay hover:text-clay transition-colors cursor-pointer"
-                >
-                  <ChevronLeft className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => setIsPaused(!isPaused)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E1712] border border-[#35271F] hover:border-clay hover:text-clay transition-colors text-[11px] cursor-pointer"
-                >
-                  {isPaused ? (
-                    <>
-                      <Play className="w-3 h-3 text-clay fill-clay" />
-                      <span>Resume Carousel</span>
-                    </>
-                  ) : (
-                    <>
-                      <Pause className="w-3 h-3 text-clay" />
-                      <span>Pause Carousel</span>
-                    </>
-                  )}
-                </button>
-                <button
-                  onClick={() => handleNudge("right")}
-                  aria-label="Slide reviews right"
-                  className="p-1.5 rounded-full bg-[#1E1712] border border-[#35271F] hover:border-clay hover:text-clay transition-colors cursor-pointer"
-                >
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            )}
+            <div className="mt-2 flex flex-wrap items-center justify-center gap-2.5 text-xs text-bone/50">
+              <button
+                onClick={() => handleNudge("left")}
+                aria-label="Slide reviews left"
+                className="p-1.5 rounded-full bg-[#1E1712] border border-[#35271F] hover:border-clay hover:text-clay transition-colors cursor-pointer"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
+              
+              <button
+                onClick={() => setIsPaused(!isPaused)}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E1712] border border-[#35271F] hover:border-clay hover:text-clay transition-colors text-[11px] cursor-pointer"
+              >
+                {isPaused ? (
+                  <>
+                    <Play className="w-3 h-3 text-clay fill-clay" />
+                    <span>Resume Carousel</span>
+                  </>
+                ) : (
+                  <>
+                    <Pause className="w-3 h-3 text-clay" />
+                    <span>Pause Carousel</span>
+                  </>
+                )}
+              </button>
+
+              <button
+                onClick={() => handleNudge("right")}
+                aria-label="Slide reviews right"
+                className="p-1.5 rounded-full bg-[#1E1712] border border-[#35271F] hover:border-clay hover:text-clay transition-colors cursor-pointer"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
 
         </div>
@@ -200,81 +201,129 @@ export default function GoogleReviews({ id = "reviews", isStandalone = false }: 
         <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-r from-[#16110D] to-transparent z-20 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-[#16110D] to-transparent z-20 pointer-events-none" />
 
-        {isLoading ? (
-          <div className="py-16 text-center text-bone/50 text-sm">
-            Loading Google review screenshots...
-          </div>
-        ) : screenshots.length === 0 ? (
-          <div className="py-12 text-center text-bone/40 text-xs uppercase tracking-widest">
-            Verified Client Reviews
-          </div>
-        ) : (
-          /* Animated Sliding Ribbon Track (Moving from Left to Right) */
+        {/* Animated Sliding Ribbon Track (Moving from Left to Right) */}
+        <div 
+          ref={carouselContainerRef}
+          className="w-full overflow-x-hidden flex items-center"
+        >
           <div 
-            ref={carouselContainerRef}
-            className="w-full overflow-x-hidden flex items-center"
+            className={`flex items-center gap-6 sm:gap-8 w-max animate-carousel-slide ${
+              isPaused ? "carousel-paused" : ""
+            }`}
           >
-            <div 
-              className={`flex items-center gap-6 sm:gap-8 w-max animate-carousel-slide ${
-                isPaused ? "carousel-paused" : ""
-              }`}
-            >
-              {displayItems.map((item, index) => {
-                const originalIndex = index % screenshots.length;
+            {displayItems.map((item, index) => {
+              const originalIndex = index % screenshots.length;
 
-                return (
-                  <div
-                    key={`${item.id}-${index}`}
-                    onClick={() => setSelectedImageIndex(originalIndex)}
-                    className="w-[290px] sm:w-[350px] shrink-0 group relative bg-[#1E1712] border border-[#35271F] rounded-xl overflow-hidden hover:border-clay/70 hover:shadow-2xl hover:shadow-clay/10 transition-all duration-300 flex flex-col justify-between cursor-pointer select-none"
-                  >
-                    {/* Card Header */}
-                    {item.reviewerName && (
-                      <div className="px-4 py-2.5 bg-[#241B15] border-b border-[#35271F] flex items-center justify-between text-xs text-bone/70">
-                        <div className="flex items-center gap-1.5 truncate">
-                          <ShieldCheck className="w-3.5 h-3.5 text-clay shrink-0" />
-                          <span className="font-medium text-bone/90 truncate">
-                            {item.reviewerName}
+              return (
+                <div
+                  key={`${item.id}-${index}`}
+                  onClick={() => setSelectedImageIndex(originalIndex)}
+                  className="w-[310px] sm:w-[380px] shrink-0 group relative bg-[#1E1712] border border-[#35271F] rounded-xl overflow-hidden hover:border-clay/70 hover:shadow-2xl hover:shadow-clay/10 transition-all duration-300 flex flex-col justify-between cursor-pointer select-none"
+                >
+                  {item.reviewText ? (
+                    /* Authentic Pixel-Perfect Google Review Card */
+                    <div className="p-5 flex flex-col justify-between h-full min-h-[260px]">
+                      <div>
+                        {/* Top Header with Avatar & Google Logo */}
+                        <div className="flex items-start justify-between gap-3 mb-3">
+                          <div className="flex items-center gap-3">
+                            <div 
+                              className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-base shadow-sm shrink-0"
+                              style={{ backgroundColor: item.avatarBg || "#1976D2" }}
+                            >
+                              {item.avatarInitial || item.reviewerName?.[0] || "D"}
+                            </div>
+                            <div className="truncate">
+                              <div className="flex items-center gap-1.5">
+                                <span className="font-semibold text-bone text-sm truncate">
+                                  {item.reviewerName}
+                                </span>
+                                <ShieldCheck className="w-3.5 h-3.5 text-clay shrink-0" />
+                              </div>
+                              <p className="text-[11px] text-bone/50 truncate">
+                                {item.location || "Verified Client"} • {item.serviceType || "Insurance Review"}
+                              </p>
+                            </div>
+                          </div>
+                          <GoogleColoredLogo className="w-5 h-5 shrink-0" />
+                        </div>
+
+                        {/* Stars + Relative Time */}
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="flex text-[#FBBC04]">
+                            {Array(5).fill(0).map((_, starIdx) => (
+                              <Star key={starIdx} className="w-4 h-4 fill-current" />
+                            ))}
+                          </div>
+                          <span className="text-[11px] text-bone/50">
+                            {item.relativeTime || "Recent review"}
                           </span>
                         </div>
-                        {item.dateAdded && (
-                          <span className="text-[10px] text-bone/50 shrink-0">{item.dateAdded}</span>
-                        )}
-                      </div>
-                    )}
 
-                    {/* Screenshot Image */}
-                    <div className="relative bg-black/40 overflow-hidden flex items-center justify-center p-3 min-h-[220px] max-h-[380px]">
-                      <img 
-                        src={item.imageData} 
-                        alt={item.caption || "Google Review Screenshot"} 
-                        className="w-full h-auto max-h-[360px] object-contain rounded transition-transform duration-300 group-hover:scale-[1.02]"
-                        loading="lazy"
-                        draggable={false}
-                      />
-                      
-                      {/* Zoom Indicator on Hover */}
-                      <div className="absolute inset-0 bg-black/35 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span className="p-2.5 rounded-full bg-clay text-bone shadow-md group-hover:scale-110 transition-transform">
-                          <Maximize2 className="w-4 h-4" />
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Optional Caption Footer */}
-                    {item.caption && (
-                      <div className="p-3 bg-[#1E1712] border-t border-[#35271F]">
-                        <p className="text-xs text-bone/80 truncate">
-                          {item.caption}
+                        {/* Review text */}
+                        <p className="text-xs sm:text-[13px] text-bone/85 leading-relaxed line-clamp-4">
+                          "{item.reviewText}"
                         </p>
                       </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+
+                      {/* Optional Owner Response */}
+                      {item.ownerReply && (
+                        <div className="mt-4 pt-3 border-t border-[#35271F]/80 text-[11px] bg-[#17120E] -mx-5 -mb-5 px-5 py-2.5">
+                          <div className="flex items-center gap-1 text-clay font-medium text-[10px] uppercase tracking-wider mb-0.5">
+                            <span>Response from Denton Insurance, LLC</span>
+                          </div>
+                          <p className="text-bone/70 line-clamp-1 italic text-[11px]">
+                            "{item.ownerReply}"
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    /* Uploaded Image Screenshot Card */
+                    <div>
+                      {item.reviewerName && (
+                        <div className="px-4 py-2.5 bg-[#241B15] border-b border-[#35271F] flex items-center justify-between text-xs text-bone/70">
+                          <div className="flex items-center gap-1.5 truncate">
+                            <ShieldCheck className="w-3.5 h-3.5 text-clay shrink-0" />
+                            <span className="font-medium text-bone/90 truncate">
+                              {item.reviewerName}
+                            </span>
+                          </div>
+                          {item.dateAdded && (
+                            <span className="text-[10px] text-bone/50 shrink-0">{item.dateAdded}</span>
+                          )}
+                        </div>
+                      )}
+
+                      <div className="relative bg-black/40 overflow-hidden flex items-center justify-center p-3 min-h-[220px] max-h-[380px]">
+                        <img 
+                          src={item.imageData} 
+                          alt={item.caption || "Google Review Screenshot"} 
+                          className="w-full h-auto max-h-[360px] object-contain rounded transition-transform duration-300 group-hover:scale-[1.02]"
+                          loading="lazy"
+                          draggable={false}
+                        />
+                        <div className="absolute inset-0 bg-black/35 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <span className="p-2.5 rounded-full bg-clay text-bone shadow-md group-hover:scale-110 transition-transform">
+                            <Maximize2 className="w-4 h-4" />
+                          </span>
+                        </div>
+                      </div>
+
+                      {item.caption && (
+                        <div className="p-3 bg-[#1E1712] border-t border-[#35271F]">
+                          <p className="text-xs text-bone/80 truncate">
+                            {item.caption}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
-        )}
+        </div>
       </div>
 
       {/* "Write a Review!" Link Container */}
@@ -339,29 +388,96 @@ export default function GoogleReviews({ id = "reviews", isStandalone = false }: 
               </button>
             )}
 
-            {/* Image Container */}
+            {/* Modal Review Card */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.92 }}
+              initial={{ opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.92 }}
+              exit={{ opacity: 0, scale: 0.94 }}
               onClick={(e) => e.stopPropagation()}
-              className="max-w-4xl max-h-[85vh] flex flex-col items-center justify-center z-10"
+              className="max-w-2xl w-full z-10"
             >
-              <img
-                src={screenshots[selectedImageIndex].imageData}
-                alt="Enlarged Google Review Screenshot"
-                className="max-w-full max-h-[78vh] object-contain rounded-lg shadow-2xl border border-[#35271F]"
-              />
+              {screenshots[selectedImageIndex].reviewText ? (
+                <div className="bg-[#1E1712] border border-[#35271F] rounded-2xl p-6 sm:p-8 shadow-2xl">
+                  {/* Google Modal Header */}
+                  <div className="flex items-start justify-between gap-4 mb-5">
+                    <div className="flex items-center gap-3">
+                      <div 
+                        className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-white text-lg shadow-sm shrink-0"
+                        style={{ backgroundColor: screenshots[selectedImageIndex].avatarBg || "#1976D2" }}
+                      >
+                        {screenshots[selectedImageIndex].avatarInitial || screenshots[selectedImageIndex].reviewerName?.[0] || "D"}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold text-bone text-base sm:text-lg">
+                            {screenshots[selectedImageIndex].reviewerName}
+                          </h3>
+                          <ShieldCheck className="w-4 h-4 text-clay" />
+                        </div>
+                        <p className="text-xs text-bone/50">
+                          {screenshots[selectedImageIndex].location} • {screenshots[selectedImageIndex].serviceType}
+                        </p>
+                      </div>
+                    </div>
+                    <GoogleColoredLogo className="w-6 h-6 shrink-0" />
+                  </div>
 
-              {/* Optional Caption Bar */}
-              {(screenshots[selectedImageIndex].reviewerName || screenshots[selectedImageIndex].caption) && (
-                <div className="mt-4 px-6 py-2 rounded-full bg-[#1E1712] border border-[#35271F] text-center text-xs text-bone/90">
-                  {screenshots[selectedImageIndex].reviewerName && (
-                    <span className="font-semibold text-clay mr-2">
-                      {screenshots[selectedImageIndex].reviewerName}:
+                  {/* Stars + Date */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex text-[#FBBC04]">
+                      {Array(5).fill(0).map((_, i) => (
+                        <Star key={i} className="w-5 h-5 fill-current" />
+                      ))}
+                    </div>
+                    <span className="text-xs text-bone/60">
+                      {screenshots[selectedImageIndex].relativeTime || "Verified Google Review"}
                     </span>
+                  </div>
+
+                  {/* Full review text */}
+                  <blockquote className="text-sm sm:text-base text-bone/90 leading-relaxed italic mb-6">
+                    "{screenshots[selectedImageIndex].reviewText}"
+                  </blockquote>
+
+                  {/* Owner Response */}
+                  {screenshots[selectedImageIndex].ownerReply && (
+                    <div className="p-4 rounded-xl bg-[#17120E] border border-[#35271F] text-xs sm:text-sm">
+                      <p className="text-clay font-semibold uppercase tracking-wider text-[10px] mb-1">
+                        Response from Denton Insurance, LLC (Owner)
+                      </p>
+                      <p className="text-bone/75 italic">
+                        "{screenshots[selectedImageIndex].ownerReply}"
+                      </p>
+                    </div>
                   )}
-                  <span>{screenshots[selectedImageIndex].caption}</span>
+
+                  <div className="mt-6 pt-4 border-t border-[#35271F] flex items-center justify-between text-xs text-bone/40">
+                    <span>Verified on Google Business Profile</span>
+                    <a
+                      href="https://g.page/r/CYSCyJvMu5NHEAE/review"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-clay hover:underline flex items-center gap-1"
+                    >
+                      Write your own review <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center">
+                  <img
+                    src={screenshots[selectedImageIndex].imageData}
+                    alt="Enlarged Google Review Screenshot"
+                    className="max-w-full max-h-[78vh] object-contain rounded-lg shadow-2xl border border-[#35271F]"
+                  />
+                  {screenshots[selectedImageIndex].reviewerName && (
+                    <div className="mt-4 px-6 py-2 rounded-full bg-[#1E1712] border border-[#35271F] text-center text-xs text-bone/90">
+                      <span className="font-semibold text-clay mr-2">
+                        {screenshots[selectedImageIndex].reviewerName}:
+                      </span>
+                      <span>{screenshots[selectedImageIndex].caption}</span>
+                    </div>
+                  )}
                 </div>
               )}
             </motion.div>

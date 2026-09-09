@@ -1,12 +1,22 @@
 // Client-side persistent storage for Google Review Screenshots using IndexedDB with localStorage fallback
 
+import { DEFAULT_GOOGLE_REVIEWS } from "../data/defaultReviews";
+
 export interface ReviewScreenshot {
   id: string;
-  imageData: string; // Base64 Data URL
+  imageData: string; // Base64 Data URL or SVG Data URL
   caption?: string;
   reviewerName?: string;
   dateAdded: string;
   isSample?: boolean;
+  location?: string;
+  serviceType?: string;
+  rating?: number;
+  relativeTime?: string;
+  reviewText?: string;
+  ownerReply?: string;
+  avatarBg?: string;
+  avatarInitial?: string;
 }
 
 const DB_NAME = "DentonInsuranceReviewsDB";
@@ -68,7 +78,8 @@ export async function getAllScreenshots(): Promise<ReviewScreenshot[]> {
     // ignore
   }
 
-  return [];
+  // If user has no custom uploads yet, return the built-in verified reviews
+  return DEFAULT_GOOGLE_REVIEWS;
 }
 
 export async function saveScreenshot(screenshot: ReviewScreenshot): Promise<void> {
