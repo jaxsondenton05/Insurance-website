@@ -1,5 +1,5 @@
 import React from "react";
-import { ShieldCheck, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, CheckCircle2, ShieldAlert } from "lucide-react";
 import JotFormEmbed from "./JotFormEmbed";
 
 export default function LeadForm() {
@@ -27,9 +27,56 @@ export default function LeadForm() {
             <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#16110D] tracking-tight mb-4">
               Let's Go Save You Some <span className="italic text-clay">Money</span>
             </h2>
-            <p className="text-base sm:text-lg text-[#7A6E65] font-light max-w-xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-[#7A6E65] font-light max-w-xl mx-auto leading-relaxed mb-8">
               Fill out the quote sheet below! Once submitted, I'll contact you soon to continue the quoting process and get you set up with the carrier you want.
             </p>
+
+            {/* Keep in Mind Information Box */}
+            <div className="max-w-2xl mx-auto bg-white border border-[#E3D9CC] rounded-xl p-5 sm:p-6 shadow-sm text-left">
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+                <div className="flex items-center gap-2">
+                  <ShieldAlert className="w-4 h-4 text-clay" />
+                  <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#16110D]">
+                    Keep in Mind
+                  </span>
+                </div>
+                <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2.5 py-0.5 rounded-full">
+                  Soft-Pull Only • Zero Score Impact
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-[#7A6E65] font-light mb-3 leading-relaxed">
+                Accurate carrier rating requires these essential verification records:
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-[#16110D]/90">
+                <div className="flex items-center gap-2 bg-[#FAF7F2] px-3 py-2 rounded-lg border border-[#EBE4D8]">
+                  <div className="w-1.5 h-1.5 rounded-full bg-clay shrink-0" />
+                  <span>Full Legal Name & Date of Birth</span>
+                </div>
+                <div className="flex items-center gap-2 bg-[#FAF7F2] px-3 py-2 rounded-lg border border-[#EBE4D8]">
+                  <div className="w-1.5 h-1.5 rounded-full bg-clay shrink-0" />
+                  <span>Phone, Email & Residential Address</span>
+                </div>
+                <div className="flex items-center gap-2 bg-[#FAF7F2] px-3 py-2 rounded-lg border border-[#EBE4D8]">
+                  <div className="w-1.5 h-1.5 rounded-full bg-clay shrink-0" />
+                  <span>Driver's License Number</span>
+                </div>
+                <div className="flex items-center gap-2 bg-[#FAF7F2] px-3 py-2 rounded-lg border border-[#EBE4D8]">
+                  <div className="w-1.5 h-1.5 rounded-full bg-clay shrink-0" />
+                  <span>Social Security # (Soft-pull only)</span>
+                </div>
+                <div className="sm:col-span-2 flex items-center gap-2 bg-[#FAF7F2] px-3 py-2 rounded-lg border border-[#EBE4D8]">
+                  <div className="w-1.5 h-1.5 rounded-full bg-clay shrink-0" />
+                  <span>Current Policy Declarations Page (if applicable)</span>
+                </div>
+              </div>
+              <div className="mt-4 pt-3.5 border-t border-[#EAE3D9] flex items-start gap-2.5 text-xs text-[#5C5047] leading-relaxed">
+                <ShieldCheck className="w-4 h-4 text-clay shrink-0 mt-0.5" />
+                <p>
+                  <strong className="font-semibold text-[#16110D]">You are not required to submit your SSN or Declarations Page upfront.</strong>{" "}
+                  Our quote sheet is completely encrypted, and our usage of this data is verified, but you are welcome to provide what you are comfortable with and Jaxson will walk you through the rest when he reaches out to you!
+                </p>
+              </div>
+            </div>
           </div>
 
           {/* Secure Form Wrapper */}

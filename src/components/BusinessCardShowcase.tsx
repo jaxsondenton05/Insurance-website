@@ -15,7 +15,6 @@ import {
   Globe, 
   Copy, 
   Check, 
-  ShieldAlert,
   Fingerprint
 } from 'lucide-react';
 import { ShieldCheckLogoIcon } from './Logo';
@@ -192,15 +191,16 @@ export default function BusinessCardShowcase() {
         <div className="max-w-5xl mx-auto mb-16">
           <div className="text-left mb-8">
             <h3 className="font-serif text-2xl sm:text-3xl font-bold text-bone tracking-tight">
-              Our Five Ironclad Guarantees
+              Client Privacy and Trust
             </h3>
             <p className="text-bone/70 text-sm sm:text-base font-light mt-1">
               Here is how we use and protect your personal information:
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {guarantees.map((item, idx) => {
+          {/* Core Guarantees in balanced 2-column grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {guarantees.slice(0, 4).map((item, idx) => {
               const IconComponent = item.icon;
               return (
                 <div 
@@ -233,54 +233,42 @@ export default function BusinessCardShowcase() {
                 </div>
               );
             })}
-
-            {/* Quick Underwriting Checklist Card */}
-            <div className="bg-gradient-to-br from-[#1E1712] to-[#140E0B] border border-[#3E2E25] rounded-xl p-6 flex flex-col justify-between shadow-lg">
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <ShieldAlert className="w-4 h-4 text-clay" />
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-bone">
-                    Keep in Mind
-                  </span>
-                </div>
-                <p className="text-xs text-bone/60 mb-3 font-light leading-relaxed">
-                  Accurate carrier rating requires these essential verification records:
-                </p>
-                <ul className="space-y-1.5 text-xs text-bone/80 font-light">
-                  <li className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-clay shrink-0" />
-                    <span>Full Legal Name & Date of Birth</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-clay shrink-0" />
-                    <span>Phone, Email & Residential Address</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-clay shrink-0" />
-                    <span>Driver's License Number</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-clay shrink-0" />
-                    <span>Social Security # (Soft-pull only)</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-clay shrink-0" />
-                    <span>Current Policy Declarations Page (if applicable)</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="mt-5 pt-3 border-t border-white/10">
-                <a 
-                  href="#contact"
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-clay hover:underline"
-                >
-                  <span>Ready to start? Fill out the quote sheet</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </a>
-              </div>
-            </div>
           </div>
+
+          {/* Centered "Our Commitment" Square */}
+          {guarantees[4] && (() => {
+            const item = guarantees[4];
+            const IconComponent = item.icon;
+            return (
+              <div className="flex justify-center">
+                <div className="w-full md:max-w-[calc(50%-12px)] bg-[#150F0B] border border-[#35271F] rounded-xl p-6 flex flex-col justify-between hover:border-clay/40 transition-all duration-300 shadow-lg group">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="w-10 h-10 rounded-lg bg-clay/10 border border-clay/20 flex items-center justify-center text-clay group-hover:scale-105 transition-transform">
+                        <IconComponent className="w-5 h-5" />
+                      </div>
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-clay bg-clay/10 border border-clay/20 px-2.5 py-0.5 rounded-full">
+                        {item.badge}
+                      </span>
+                    </div>
+
+                    <h4 className="font-serif text-lg font-bold text-bone mb-2 leading-snug">
+                      {item.title}
+                    </h4>
+
+                    <p className="text-bone/70 text-xs sm:text-sm font-light leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+
+                  <div className="mt-5 pt-3 border-t border-white/5 flex items-center gap-1.5 text-[11px] font-medium text-emerald-400">
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Guaranteed by Denton Insurance, LLC</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Direct Digital Card Verification (Interactive dark/light card) */}
