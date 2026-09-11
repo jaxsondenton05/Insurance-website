@@ -44,6 +44,12 @@ export default function Navbar() {
               Coverage
             </a>
             <a 
+              href="/#privacy"
+              className="text-[11px] sm:text-xs font-semibold text-bone/80 hover:text-clay transition-colors uppercase tracking-wider sm:tracking-[0.16em] whitespace-nowrap px-1.5 py-1"
+            >
+              Privacy & Trust
+            </a>
+            <a 
               href="/#social"
               className="text-[11px] sm:text-xs font-semibold text-bone/80 hover:text-clay transition-colors uppercase tracking-wider sm:tracking-[0.16em] whitespace-nowrap px-1.5 py-1"
             >
