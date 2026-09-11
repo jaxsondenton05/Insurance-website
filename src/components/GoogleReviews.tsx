@@ -8,8 +8,6 @@ import {
   ShieldCheck, 
   PenSquare, 
   ExternalLink, 
-  Play, 
-  Pause,
   Upload,
   CheckCircle2
 } from "lucide-react";
@@ -41,10 +39,8 @@ export default function GoogleReviews({ id = "reviews", isStandalone = false }: 
   // Use verified Google Review screenshot assets as primary source
   const [screenshots, setScreenshots] = useState<ReviewScreenshot[]>(DEFAULT_GOOGLE_REVIEWS);
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
-  const [isPaused, setIsPaused] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
-  const carouselContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load screenshots from storage (IndexedDB / localStorage)
@@ -145,14 +141,6 @@ export default function GoogleReviews({ id = "reviews", isStandalone = false }: 
   // Gentle, slow glide speed
   const animDuration = Math.max(45, singleSet.length * 10);
 
-  // Manual nudge scroll functions
-  const handleNudge = (direction: "left" | "right") => {
-    if (carouselContainerRef.current) {
-      const scrollAmount = direction === "left" ? -380 : 380;
-      carouselContainerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
-    }
-  };
-
   return (
     <section 
       id={id} 
@@ -186,8 +174,7 @@ export default function GoogleReviews({ id = "reviews", isStandalone = false }: 
         .animate-carousel-slide {
           animation: slideLeftToRight ${animDuration}s linear infinite;
         }
-        .animate-carousel-slide:hover,
-        .carousel-paused {
+        .animate-carousel-slide:hover {
           animation-play-state: paused !important;
         }
       `}</style>
@@ -215,7 +202,7 @@ export default function GoogleReviews({ id = "reviews", isStandalone = false }: 
             </h2>
 
             {/* Trust badge with Google 5.0 Rating */}
-            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[#1E1712] border border-[#35271F] shadow-inner mb-4">
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-[#1E1712] border border-[#35271F] shadow-inner">
               <GoogleColoredLogo className="w-4 h-4 shrink-0" />
               <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-bone">
                 <span className="text-white">Google Reviews</span>
@@ -229,62 +216,16 @@ export default function GoogleReviews({ id = "reviews", isStandalone = false }: 
               </span>
             </div>
 
-            {/* Carousel Control Strip */}
-            <div className="mt-2 flex flex-wrap items-center justify-center gap-2.5 text-xs text-bone/50">
-              <button
-                onClick={() => handleNudge("left")}
-                aria-label="Slide reviews left"
-                className="p-1.5 rounded-full bg-[#1E1712] border border-[#35271F] hover:border-clay hover:text-clay transition-colors cursor-pointer"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" />
-              </button>
-              
-              <button
-                onClick={() => setIsPaused(!isPaused)}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E1712] border border-[#35271F] hover:border-clay hover:text-clay transition-colors text-[11px] cursor-pointer"
-              >
-                {isPaused ? (
-                  <>
-                    <Play className="w-3 h-3 text-clay fill-clay" />
-                    <span>Resume Carousel</span>
-                  </>
-                ) : (
-                  <>
-                    <Pause className="w-3 h-3 text-clay" />
-                    <span>Pause Carousel</span>
-                  </>
-                )}
-              </button>
-
-              <button
-                onClick={() => handleNudge("right")}
-                aria-label="Slide reviews right"
-                className="p-1.5 rounded-full bg-[#1E1712] border border-[#35271F] hover:border-clay hover:text-clay transition-colors cursor-pointer"
-              >
-                <ChevronRight className="w-3.5 h-3.5" />
-              </button>
-
-              {/* Dev upload trigger (visible in development preview, hidden in production) */}
-              {import.meta.env.DEV && (
-                <button
-                  onClick={() => fileInputRef.current?.click()}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E1712] border border-[#35271F] hover:border-clay hover:text-clay transition-colors text-[11px] cursor-pointer ml-1"
-                  title="Upload screenshot from Google Reviews"
-                >
-                  <Upload className="w-3 h-3 text-clay" />
-                  <span>Upload Screenshot</span>
-                </button>
-              )}
-
-              {uploadSuccess && (
-                <span className="inline-flex items-center gap-1 text-[11px] text-emerald-400 ml-1">
+            {uploadSuccess && (
+              <div className="mt-2.5">
+                <span className="inline-flex items-center gap-1 text-[11px] text-emerald-400">
                   <CheckCircle2 className="w-3 h-3" />
                   Saved to website!
                 </span>
-              )}
-            </div>
+              </div>
+            )}
 
-            {/* Hidden file input */}
+            {/* Hidden file input for drag & drop or uploads */}
             <input
               type="file"
               ref={fileInputRef}
@@ -318,15 +259,8 @@ export default function GoogleReviews({ id = "reviews", isStandalone = false }: 
         <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-28 bg-gradient-to-l from-[#16110D] to-transparent z-20 pointer-events-none" />
 
         {/* Animated Sliding Ribbon Track (Moving from Left to Right) */}
-        <div 
-          ref={carouselContainerRef}
-          className="w-full overflow-x-hidden flex items-center"
-        >
-          <div 
-            className={`flex items-center gap-6 sm:gap-8 w-max animate-carousel-slide ${
-              isPaused ? "carousel-paused" : ""
-            }`}
-          >
+        <div className="w-full overflow-x-hidden flex items-center">
+          <div className="flex items-center gap-6 sm:gap-8 w-max animate-carousel-slide">
             {displayItems.map((item, index) => {
               const originalIndex = index % screenshots.length;
 

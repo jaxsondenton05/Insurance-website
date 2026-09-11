@@ -5,6 +5,7 @@ import Hero from "../components/Hero";
 import About from "../components/About";
 import Services from "../components/Services";
 import BusinessCardShowcase from "../components/BusinessCardShowcase";
+import SocialMedia from "../components/SocialMedia";
 import LeadForm from "../components/LeadForm";
 import Footer from "../components/Footer";
 import { motion, useScroll, useSpring } from "motion/react";
@@ -31,6 +32,7 @@ export default function Home() {
       <About />
       <Services />
       <BusinessCardShowcase />
+      <SocialMedia id="social" />
       <LeadForm />
       <Footer />
 

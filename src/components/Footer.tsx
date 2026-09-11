@@ -1,5 +1,5 @@
 import React from "react";
-import { Mail, Phone, Globe } from "lucide-react";
+import { Mail, Phone, Globe, Facebook, Instagram, Music2, AtSign } from "lucide-react";
 import { ShieldCheckLogoIcon } from "./Logo";
 
 export default function Footer() {
@@ -37,6 +37,55 @@ export default function Footer() {
                 </span>
               ))}
             </div>
+
+            {/* Social Media Links */}
+            <div className="pt-2">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-clay mb-2.5">
+                Follow &amp; Learn
+              </p>
+              <div className="flex flex-wrap items-center gap-2.5">
+                <a
+                  href="https://www.facebook.com/DentonInsurance01/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-lg bg-[#1A130E] border border-[#35271F] flex items-center justify-center text-bone/70 hover:text-clay hover:border-clay/50 transition-colors"
+                  title="Facebook: @DentonInsurance01"
+                  aria-label="Facebook: @DentonInsurance01"
+                >
+                  <Facebook className="w-4 h-4" />
+                </a>
+                <a
+                  href="https://www.instagram.com/dentoninsurance01/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-lg bg-[#1A130E] border border-[#35271F] flex items-center justify-center text-bone/70 hover:text-clay hover:border-clay/50 transition-colors"
+                  title="Instagram: @dentoninsurance01"
+                  aria-label="Instagram: @dentoninsurance01"
+                >
+                  <Instagram className="w-4 h-4" />
+                </a>
+                <a
+                  href="https://www.tiktok.com/@dentoninsurance01"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-lg bg-[#1A130E] border border-[#35271F] flex items-center justify-center text-bone/70 hover:text-clay hover:border-clay/50 transition-colors"
+                  title="TikTok: @dentoninsurance01"
+                  aria-label="TikTok: @dentoninsurance01"
+                >
+                  <Music2 className="w-4 h-4" />
+                </a>
+                <a
+                  href="https://www.threads.com/@dentoninsurance01"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-lg bg-[#1A130E] border border-[#35271F] flex items-center justify-center text-bone/70 hover:text-clay hover:border-clay/50 transition-colors"
+                  title="Threads: @dentoninsurance01"
+                  aria-label="Threads: @dentoninsurance01"
+                >
+                  <AtSign className="w-4 h-4" />
+                </a>
+              </div>
+            </div>
           </div>
 
           {/* Quick Navigation */}
@@ -47,10 +96,10 @@ export default function Footer() {
             <ul className="space-y-2.5 text-sm font-light">
               {[
                 { name: "Reviews", href: "/#reviews" },
-                { name: "Home", href: "/#home" },
-                { name: "Our Origins", href: "/#about" },
+                { name: "About", href: "/#about" },
                 { name: "Coverage Options", href: "/#services" },
                 { name: "Privacy & Trust Guarantee", href: "/#privacy" },
+                { name: "Social Media", href: "/#social" },
                 { name: "Free Quote Sheet", href: "/#contact" }
               ].map(item => (
                 <li key={item.name}>

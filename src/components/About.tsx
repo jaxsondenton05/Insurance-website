@@ -19,7 +19,7 @@ export default function About() {
               The Honest Story
             </span>
             <h2 className="font-serif text-3xl sm:text-5xl font-bold text-bone tracking-tight mb-3">
-              I Entered the Industry to Solve <span className="italic text-clay">Real-World Problems</span>
+              I Entered the Industry Young to Advocate for <span className="italic text-clay">People on a Budget</span>
             </h2>
             <div className="w-16 h-1 bg-clay rounded-full mb-4" />
           </div>

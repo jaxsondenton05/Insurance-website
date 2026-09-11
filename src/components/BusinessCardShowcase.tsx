@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import React from 'react';
 import { 
   ShieldCheck, 
   Lock, 
@@ -9,25 +8,14 @@ import {
   PhoneCall, 
   Scale, 
   CheckCircle2, 
-  ArrowRight,
   Phone, 
   Mail, 
-  Globe, 
-  Copy, 
   Check, 
   Fingerprint
 } from 'lucide-react';
 import { ShieldCheckLogoIcon } from './Logo';
 
 export default function BusinessCardShowcase() {
-  const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
-  const [copiedField, setCopiedField] = useState<string | null>(null);
-
-  const copyToClipboard = (text: string, fieldName: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedField(fieldName);
-    setTimeout(() => setCopiedField(null), 2000);
-  };
 
   const guarantees = [
     {
@@ -271,225 +259,15 @@ export default function BusinessCardShowcase() {
           })()}
         </div>
 
-        {/* Direct Digital Card Verification (Interactive dark/light card) */}
-        <div className="max-w-3xl mx-auto text-center pt-8 border-t border-[#2E221B]">
-          <div className="mb-8">
+        {/* Contact Me Directly Section */}
+        <div className="max-w-3xl mx-auto text-center pt-10 border-t border-[#2E221B]">
+          <div>
             <h3 className="font-serif text-2xl sm:text-3xl font-bold text-bone">
               Contact Me Directly
             </h3>
-            <p className="text-bone/70 text-sm font-light mt-1">
-              Save my digital card or contact me directly with any questions about your quote.
+            <p className="text-bone/70 text-sm font-light mt-2 max-w-lg mx-auto">
+              Have questions about your coverage or want to discuss quotes one-on-one? Reach out directly via phone or email.
             </p>
-
-            {/* Toggle pill buttons */}
-            <div className="inline-flex items-center p-1.5 bg-[#120D0A] rounded-full border border-[#35271F] mt-5">
-              <button
-                onClick={() => setActiveSide('front')}
-                className={`px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
-                  activeSide === 'front'
-                    ? 'bg-clay text-bone shadow-md shadow-clay/20'
-                    : 'text-bone/60 hover:text-bone'
-                }`}
-              >
-                digital card (dark)
-              </button>
-              <button
-                onClick={() => setActiveSide('back')}
-                className={`px-4 sm:px-5 py-1.5 sm:py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-200 ${
-                  activeSide === 'back'
-                    ? 'bg-bone text-[#16110D] shadow-md'
-                    : 'text-bone/60 hover:text-bone'
-                }`}
-              >
-                digital card (light)
-              </button>
-            </div>
-          </div>
-
-          {/* Business Card Container */}
-          <div className="max-w-2xl mx-auto text-left">
-            <AnimatePresence mode="wait">
-              {activeSide === 'front' ? (
-                /* DARK DIGITAL CARD */
-                <motion.div
-                  key="front-card"
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
-                  transition={{ duration: 0.35, ease: "easeInOut" }}
-                  className="relative aspect-[16/9] min-h-[300px] sm:min-h-[340px] bg-[#16110D] rounded-xl sm:rounded-2xl p-6 sm:p-9 border border-[#35271F] shadow-2xl shadow-black/80 overflow-hidden flex flex-col justify-between"
-                >
-                  <div className="absolute -top-12 -left-12 w-48 h-48 bg-[#E06A3B]/25 rounded-full blur-2xl pointer-events-none" />
-                  <div className="absolute -bottom-16 -right-16 w-56 h-56 bg-[#E06A3B]/20 rounded-full blur-3xl pointer-events-none" />
-
-                  <div>
-                    <div className="flex items-center gap-3.5">
-                      <div className="text-clay">
-                        <ShieldCheckLogoIcon className="w-8 h-8 sm:w-10 sm:h-10" />
-                      </div>
-                      <h3 className="font-serif text-2xl sm:text-3xl font-bold text-bone tracking-tight">
-                        Denton Insurance, LLC
-                      </h3>
-                    </div>
-                    <div className="w-14 h-1 bg-clay rounded-full mt-3" />
-                  </div>
-
-                  <div className="space-y-3 my-auto pt-3">
-                    {/* Phone */}
-                    <div className="flex items-center justify-between group">
-                      <a
-                        href="tel:9493970449"
-                        className="flex items-center gap-3.5 text-bone/90 hover:text-clay transition-colors text-sm sm:text-base font-medium"
-                      >
-                        <Phone className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-clay shrink-0" />
-                        <span>949-397-0449</span>
-                      </a>
-                      <button
-                        onClick={() => copyToClipboard('949-397-0449', 'phone')}
-                        className="p-1.5 text-bone/40 hover:text-clay transition-colors"
-                        title="Copy phone"
-                        aria-label="Copy phone number"
-                      >
-                        {copiedField === 'phone' ? (
-                          <span className="text-xs text-emerald-400 font-medium flex items-center gap-1">
-                            <Check className="w-3.5 h-3.5" /> Copied
-                          </span>
-                        ) : (
-                          <Copy className="w-3.5 h-3.5" />
-                        )}
-                      </button>
-                    </div>
-
-                    {/* Email */}
-                    <div className="flex items-center justify-between group">
-                      <a
-                        href="mailto:jaxson@dentoninsurance.org"
-                        className="flex items-center gap-3.5 text-bone/90 hover:text-clay transition-colors text-sm sm:text-base font-medium"
-                      >
-                        <Mail className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-clay shrink-0" />
-                        <span>jaxson@dentoninsurance.org</span>
-                      </a>
-                      <button
-                        onClick={() => copyToClipboard('jaxson@dentoninsurance.org', 'email')}
-                        className="p-1.5 text-bone/40 hover:text-clay transition-colors"
-                        title="Copy email"
-                        aria-label="Copy email address"
-                      >
-                        {copiedField === 'email' ? (
-                          <span className="text-xs text-emerald-400 font-medium flex items-center gap-1">
-                            <Check className="w-3.5 h-3.5" /> Copied
-                          </span>
-                        ) : (
-                          <Copy className="w-3.5 h-3.5" />
-                        )}
-                      </button>
-                    </div>
-
-                    {/* Website */}
-                    <div className="flex items-center justify-between group">
-                      <a
-                        href="https://dentoninsurance.org"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-3.5 text-bone/90 hover:text-clay transition-colors text-sm sm:text-base font-medium"
-                      >
-                        <Globe className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-clay shrink-0" />
-                        <span>dentoninsurance.org</span>
-                      </a>
-                      <button
-                        onClick={() => copyToClipboard('dentoninsurance.org', 'web')}
-                        className="p-1.5 text-bone/40 hover:text-clay transition-colors"
-                        title="Copy web address"
-                        aria-label="Copy website URL"
-                      >
-                        {copiedField === 'web' ? (
-                          <span className="text-xs text-emerald-400 font-medium flex items-center gap-1">
-                            <Check className="w-3.5 h-3.5" /> Copied
-                          </span>
-                        ) : (
-                          <Copy className="w-3.5 h-3.5" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center gap-2">
-                      <span className="px-3 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold uppercase tracking-wider border border-clay/60 text-clay bg-clay/5">
-                        AUTO
-                      </span>
-                      <span className="px-3 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold uppercase tracking-wider border border-clay/60 text-clay bg-clay/5">
-                        HOME
-                      </span>
-                      <span className="px-3 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold uppercase tracking-wider border border-clay/60 text-clay bg-clay/5">
-                        BUSINESS
-                      </span>
-                    </div>
-                    <span className="text-[11px] sm:text-xs text-bone/50 tracking-wider">
-                      A part of CRGIA
-                    </span>
-                  </div>
-                </motion.div>
-              ) : (
-                /* LIGHT DIGITAL CARD */
-                <motion.div
-                  key="back-card"
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
-                  transition={{ duration: 0.35, ease: "easeInOut" }}
-                  className="relative aspect-[16/9] min-h-[300px] sm:min-h-[340px] bg-[#FAF7F2] text-[#16110D] rounded-xl sm:rounded-2xl p-6 sm:p-9 border border-[#E8E0D5] shadow-2xl shadow-black/40 overflow-hidden flex flex-col justify-between"
-                >
-                  <div className="absolute left-0 top-0 bottom-0 w-2.5 sm:w-3 bg-clay" />
-
-                  <svg
-                    className="absolute right-0 top-0 bottom-0 h-full w-2/3 pointer-events-none opacity-40"
-                    viewBox="0 0 400 300"
-                    fill="none"
-                  >
-                    <circle cx="340" cy="80" r="140" stroke="#E06A3B" strokeWidth="1.5" strokeOpacity="0.25" />
-                    <circle cx="340" cy="240" r="170" stroke="#E06A3B" strokeWidth="1.5" strokeOpacity="0.2" />
-                    <circle cx="340" cy="240" r="100" stroke="#E06A3B" strokeWidth="1" strokeOpacity="0.15" />
-                  </svg>
-
-                  <div className="pl-3">
-                    <div className="flex items-center gap-3">
-                      <div className="text-clay">
-                        <ShieldCheckLogoIcon className="w-9 h-9 sm:w-11 sm:h-11" filled={false} />
-                      </div>
-                      <div>
-                        <h3 className="font-serif text-2xl sm:text-3xl font-bold text-[#16110D] tracking-tight leading-none">
-                          Denton Insurance, LLC
-                        </h3>
-                        <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-[0.26em] text-clay mt-1">
-                          PROTECTION YOU CAN TRUST
-                        </p>
-                      </div>
-                    </div>
-                    <div className="w-14 h-1 bg-clay rounded-full mt-3" />
-                  </div>
-
-                  <div className="pl-3 my-auto pt-4">
-                    <h4 className="font-serif text-3xl sm:text-4xl font-bold text-[#16110D] tracking-tight">
-                      Jaxson Denton
-                    </h4>
-                    <p className="text-xs sm:text-sm font-semibold uppercase tracking-[0.22em] text-[#8C7E74] mt-1">
-                      INDEPENDENT INSURANCE AGENT
-                    </p>
-                  </div>
-
-                  <div className="pl-3 pt-3 border-t border-[#E8E0D5] flex items-center justify-between text-xs text-[#8C7E74]">
-                    <span className="font-medium">Texas & Louisiana • CRG Insurance Agency</span>
-                    <a
-                      href="#contact"
-                      className="inline-flex items-center gap-1 font-semibold text-clay hover:underline"
-                    >
-                      Free Quote &rarr;
-                    </a>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
 
           {/* Direct action buttons */}
