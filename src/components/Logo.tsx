@@ -12,26 +12,26 @@ interface LogoProps {
 export function ShieldCheckLogoIcon({ className = "w-8 h-8", filled = false }: { className?: string; filled?: boolean }) {
   return (
     <svg
-      viewBox="0 0 512 512"
+      viewBox="0 0 48 48"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={className}
       aria-hidden="true"
     >
-      {/* Outer Shield Path matching the exact curves of General Logo */}
+      {/* Outer Shield Path with soft rounded curves matching business cards */}
       <path
-        d="M256 120 C296 142 344 148 376 154 C382 220 382 290 338 354 C304 404 268 424 256 428 C244 424 208 404 174 354 C130 290 130 220 136 154 C168 148 216 142 256 120 Z"
+        d="M24 4.5C30.5 8 38 8.8 40.5 9.5C41.2 14.5 41.5 24 37 32.5C33.5 39 26.5 43.5 24 44.5C21.5 43.5 14.5 39 11 32.5C6.5 24 6.8 14.5 7.5 9.5C10 8.8 17.5 8 24 4.5Z"
         fill={filled ? "currentColor" : "rgba(224, 106, 59, 0.12)"}
         stroke="currentColor"
-        strokeWidth="32"
+        strokeWidth="3.2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       {/* Inner Checkmark */}
       <path
-        d="M204 274 L244 316 L318 226"
+        d="M17 23.5L22 28.5L31.5 19"
         stroke={filled ? "#FFFFFF" : "currentColor"}
-        strokeWidth="34"
+        strokeWidth="3.4"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -69,12 +69,8 @@ export default function Logo({
   return (
     <div className={`flex flex-col ${className}`}>
       <div className="flex items-center gap-3.5">
-        <div className="shrink-0 transition-transform duration-300 group-hover:scale-105">
-          <img
-            src="/general-logo.png"
-            alt="Denton Insurance Logo"
-            className={`${iconSizes[size]} object-contain rounded-xl shadow-md shadow-clay/20`}
-          />
+        <div className="text-clay shrink-0 transition-transform duration-300 group-hover:scale-105">
+          <ShieldCheckLogoIcon className={iconSizes[size]} />
         </div>
         
         {!iconOnly && (

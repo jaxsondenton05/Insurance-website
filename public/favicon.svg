@@ -1,48 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <defs>
-    <!-- Outer Bloom Glow -->
-    <filter id="neonGlow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="12" result="blur1" />
-      <feGaussianBlur stdDeviation="24" result="blur2" />
-      <feGaussianBlur stdDeviation="4" result="blur3" />
-      <feMerge>
-        <feMergeNode in="blur2" />
-        <feMergeNode in="blur1" />
-        <feMergeNode in="blur3" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
-
-    <radialGradient id="darkBg" cx="50%" cy="50%" r="70%">
-      <stop offset="0%" stop-color="#160F0A" />
-      <stop offset="60%" stop-color="#0D0805" />
-      <stop offset="100%" stop-color="#070403" />
-    </radialGradient>
-  </defs>
-
-  <!-- Deep Dark Background -->
-  <rect width="512" height="512" fill="url(#darkBg)" />
-
-  <!-- Glowing Emblem Group -->
-  <g filter="url(#neonGlow)">
-    <!-- Outer Shield Outline -->
-    <path
-      d="M256 120 C296 142 344 148 376 154 C382 220 382 290 338 354 C304 404 268 424 256 428 C244 424 208 404 174 354 C130 290 130 220 136 154 C168 148 216 142 256 120 Z"
-      fill="none"
-      stroke="#FF5E1E"
-      stroke-width="22"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-
-    <!-- Inner Checkmark -->
-    <path
-      d="M204 274 L244 316 L318 226"
-      fill="none"
-      stroke="#FF5E1E"
-      stroke-width="24"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Rounded ebony background -->
+  <rect width="64" height="64" rx="14" fill="#16110D" />
+  <rect x="1" y="1" width="62" height="62" rx="13" stroke="#35271F" stroke-width="2" />
+  
+  <!-- Outer Shield in Terracotta / Clay -->
+  <path
+    d="M32 8C40.5 12.5 50 13.5 53 14.5C54 21 54.5 33 48.5 44C44 52.5 35 58 32 59.5C29 58 20 52.5 15.5 44C9.5 33 10 21 11 14.5C14 13.5 23.5 12.5 32 8Z"
+    fill="#E06A3B"
+    fill-opacity="0.18"
+    stroke="#E06A3B"
+    stroke-width="3.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <!-- Inner Checkmark in Pure White -->
+  <path
+    d="M23 33.5L29.5 40L41.5 27.5"
+    stroke="#FAF7F2"
+    stroke-width="4.2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
 </svg>
