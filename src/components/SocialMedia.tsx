@@ -12,9 +12,6 @@ interface SocialPlatform {
   handle: string;
   url: string;
   icon: React.ComponentType<{ className?: string }>;
-  bgColor: string;
-  shadowColor: string;
-  iconFilter?: string;
 }
 
 const socialPlatforms: SocialPlatform[] = [
@@ -22,34 +19,25 @@ const socialPlatforms: SocialPlatform[] = [
     name: "Facebook",
     handle: "@DentonInsurance01",
     url: "https://www.facebook.com/DentonInsurance01/",
-    icon: Facebook,
-    bgColor: "bg-[#1877F2]",
-    shadowColor: "shadow-[#1877F2]/30 hover:shadow-[#1877F2]/60 hover:ring-[#1877F2]/50"
+    icon: Facebook
   },
   {
     name: "Instagram",
     handle: "@dentoninsurance01",
     url: "https://www.instagram.com/dentoninsurance01/",
-    icon: Instagram,
-    bgColor: "bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF]",
-    shadowColor: "shadow-[#DD2A7B]/30 hover:shadow-[#DD2A7B]/60 hover:ring-[#DD2A7B]/50"
+    icon: Instagram
   },
   {
     name: "TikTok",
     handle: "@dentoninsurance01",
     url: "https://www.tiktok.com/@dentoninsurance01",
-    icon: Music2,
-    bgColor: "bg-black border border-white/25",
-    shadowColor: "shadow-black/80 hover:shadow-[#25F4EE]/30 hover:ring-[#25F4EE]/60",
-    iconFilter: "[filter:drop-shadow(-3px_-2px_0px_#25F4EE)_drop-shadow(3px_2px_0px_#FE2C55)]"
+    icon: Music2
   },
   {
     name: "Threads",
     handle: "@dentoninsurance01",
     url: "https://www.threads.com/@dentoninsurance01",
-    icon: AtSign,
-    bgColor: "bg-[#111] border border-white/20",
-    shadowColor: "shadow-white/15 hover:shadow-white/40 hover:ring-white/40"
+    icon: AtSign
   }
 ];
 
@@ -76,7 +64,10 @@ export default function SocialMedia({ id = "social" }: { id?: string }) {
           </h2>
 
           <p className="text-base sm:text-lg text-bone/70 font-light leading-relaxed">
-            Follow our pages where we explain insurance terms in plain English, debunk the most common misconceptions consumers face when buying policies, and give you an unfiltered, behind-the-scenes look into how the industry actually works.
+            We have four active pages dedicated to explaining the insurance industry, defining confusing jargon, and correcting common misconceptions about all types of insurance.
+            <span className="block mt-3 text-bone/90 font-medium">
+              Follow us to learn more about what you&apos;re paying for!
+            </span>
           </p>
         </div>
 
@@ -94,10 +85,8 @@ export default function SocialMedia({ id = "social" }: { id?: string }) {
                 className="group flex flex-col items-center gap-3 transition-transform duration-300 hover:-translate-y-2 focus:outline-none"
               >
                 {/* Platform Graphic */}
-                <div
-                  className={`w-20 h-20 sm:w-24 sm:h-24 rounded-2xl sm:rounded-3xl flex items-center justify-center text-white shadow-xl transition-all duration-300 group-hover:scale-110 group-hover:ring-4 ${platform.bgColor} ${platform.shadowColor}`}
-                >
-                  <IconComp className={`w-10 h-10 sm:w-12 sm:h-12 ${platform.iconFilter || "drop-shadow-md"}`} />
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl sm:rounded-3xl flex items-center justify-center bg-[#1B140F] border border-[#3A2B21] text-bone/85 shadow-lg shadow-black/50 transition-all duration-300 group-hover:scale-105 group-hover:border-clay/60 group-hover:bg-[#251C16] group-hover:text-clay group-hover:shadow-clay/10">
+                  <IconComp className="w-9 h-9 sm:w-11 sm:h-11 transition-colors duration-300" />
                 </div>
 
                 {/* Platform Label */}
