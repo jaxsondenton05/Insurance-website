@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#140E0A"/>
+      <stop offset="50%" stop-color="#1A130E"/>
+      <stop offset="100%" stop-color="#241812"/>
+    </linearGradient>
+    <linearGradient id="shieldGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#E06A3B" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#E06A3B" stop-opacity="0.05"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="60" result="blur" />
+    </filter>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Ambient Glow -->
+  <circle cx="1050" cy="180" r="320" fill="#E06A3B" opacity="0.12" filter="url(#glow)"/>
+  <circle cx="150" cy="500" r="280" fill="#E06A3B" opacity="0.08" filter="url(#glow)"/>
+
+  <!-- Outer Border Frame -->
+  <rect x="36" y="36" width="1128" height="558" rx="24" fill="none" stroke="#3A2A20" stroke-width="2"/>
+
+  <!-- Left Content Column -->
+  <!-- Badge: Natchitoches, Louisiana -->
+  <g transform="translate(100, 110)">
+    <rect width="320" height="42" rx="21" fill="#E06A3B" fill-opacity="0.12" stroke="#E06A3B" stroke-opacity="0.4" stroke-width="1.5"/>
+    <text x="160" y="26" fill="#E06A3B" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="14" font-weight="700" letter-spacing="3" text-anchor="middle">
+      NATCHITOCHES, LA • LICENSED IN LA &amp; TX
+    </text>
+  </g>
+
+  <!-- Main Headline in Serif -->
+  <text x="100" y="235" fill="#FAF7F2" font-family="'Georgia', serif" font-size="64" font-weight="bold" letter-spacing="-1">
+    Denton Insurance
+  </text>
+  
+  <!-- Subtitle Tagline with Terracotta Accent -->
+  <text x="100" y="295" fill="#E06A3B" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="600" letter-spacing="6">
+    PROTECTION YOU CAN TRUST
+  </text>
+
+  <!-- Accent Divider -->
+  <rect x="100" y="325" width="120" height="4" rx="2" fill="#E06A3B"/>
+
+  <!-- Value Description -->
+  <text x="100" y="380" fill="#D5CBC1" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="400">
+    Independent Agent Jaxson Denton advocates for people on a budget.
+  </text>
+  <text x="100" y="415" fill="#A89B8F" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="400">
+    100% Free Quotes • Honest Guidance • Auto, Home, Life &amp; Commercial
+  </text>
+
+  <!-- Bottom Details Bar -->
+  <g transform="translate(100, 480)">
+    <!-- Website Link -->
+    <rect width="250" height="52" rx="10" fill="#E06A3B" />
+    <text x="125" y="32" fill="#FAF7F2" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="700" letter-spacing="1" text-anchor="middle">
+      GET A FREE QUOTE
+    </text>
+
+    <!-- Phone -->
+    <g transform="translate(280, 0)">
+      <rect width="240" height="52" rx="10" fill="#201712" stroke="#3A2A20" stroke-width="1.5"/>
+      <text x="120" y="32" fill="#FAF7F2" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="16" font-weight="600" letter-spacing="1" text-anchor="middle">
+        (949) 397-0449
+      </text>
+    </g>
+
+    <!-- 5.0 Google Rating pill -->
+    <g transform="translate(550, 0)">
+      <rect width="210" height="52" rx="10" fill="#201712" stroke="#3A2A20" stroke-width="1.5"/>
+      <text x="105" y="32" fill="#FAF7F2" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="15" font-weight="600" text-anchor="middle">
+        ★ 5.0 Google Rating
+      </text>
+    </g>
+  </g>
+
+  <!-- Right Shield Illustration Graphics -->
+  <g transform="translate(860, 160)">
+    <!-- Outer Shield Halo Ring -->
+    <circle cx="120" cy="150" r="180" fill="url(#shieldGlow)" filter="url(#glow)"/>
+    <rect x="-10" y="10" width="260" height="280" rx="30" fill="#1C140F" stroke="#38281E" stroke-width="2"/>
+    
+    <!-- Shield Emblem -->
+    <path
+      d="M120 45 C155 64 195 68 208 72 C212 100 214 150 188 197 C169 233 131 257 120 263 C109 257 71 233 52 197 C26 150 28 100 32 72 C45 68 85 64 120 45 Z"
+      fill="#E06A3B"
+      fill-opacity="0.2"
+      stroke="#E06A3B"
+      stroke-width="9"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <!-- Checkmark inside Shield -->
+    <path
+      d="M82 153 L108 179 L158 126"
+      stroke="#FAF7F2"
+      stroke-width="11"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </g>
+</svg>

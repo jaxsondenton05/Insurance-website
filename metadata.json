@@ -1,6 +1,6 @@
 {
   "name": "Denton Insurance",
-  "description": "Professional landing page for Jaxson Denton, an independent insurance agent providing Home, Auto, and Commercial coverage.",
+  "description": "Independent insurance agent Jaxson Denton serving Natchitoches, Louisiana and Texas with honest, affordable coverage for Auto, Home, Life, and Commercial.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
